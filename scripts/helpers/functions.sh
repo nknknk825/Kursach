@@ -22,7 +22,7 @@ clear_line() {
 }
 
 is_number() {
-        re='^[(-9)-9]+$'
+        re='^[0-9]+$'
         num=0
         style "$1" $blue n
 
@@ -33,7 +33,7 @@ is_number() {
 
                 clear_line
 
-                style "ОШИБКА: '$num'-не является числом" $red
+                style "	ОШИБКА: '$num'-не является целым числом" $red
                 style "$1" $blue n
         done
 }

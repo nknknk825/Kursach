@@ -34,6 +34,22 @@ out_menu() {
 			style "Выберите действие 0-${num}: " $blue n
 			read num
 			case $num in
+				1)
+                                        style "Диапазон длинны: [2;1000]" $yellow
+                                        while true;do
+                                                is_number "	Ведите длинну массива: "
+                                                if [ "$num" -gt "1" ]; then
+                                                        if [ "$num" -lt "1001" ]; then break
+                                                        else
+                                                                clear_line
+                                                                style "	Error: Число ($num) > 1000" $red
+                                                        fi
+                                                else
+                                                        clear_line
+                                                        style "	Error: Число ($num) <= 1" $red
+                                                fi
+                                        done
+				;;&
 				[1-2])
 					clear
 					out_zast
