@@ -10,7 +10,7 @@ TRG = bin/myapp
 
 # Исходники и объектники
 SOR = $(wildcard src/*.c)
-OBJ = $(patsubst src/%.c,build/%.o,$(SOR))
+OBJ = $(patsubst src/%.c, build/%.o, $(SOR))
 
 all: $(TRG)
 
@@ -22,8 +22,8 @@ build/%.o: src/%.c
 	@mkdir -p build
 	$(CCF) -c -o $@ $<
 
-run: $(TRG)
-	./scripts/menu
+run:
+	./scripts/menu.sh
 
 clean:
 	rm -rf build/*.o $(TARGET)
