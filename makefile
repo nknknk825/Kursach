@@ -6,7 +6,7 @@ CFLAGS = -Wall -g
 
 CCF = $(CC) $(CFLAGS)
 
-TARGET = bin/myapp
+TRG = bin/myapp
 
 # Исходники и объектники
 SOR = $(wildcard src/*.c)
@@ -26,8 +26,8 @@ run: $(TRG)
 	./scripts/menu
 
 clean:
-        rm -rf build/*.o $(TARGET)
+	rm -rf build/*.o $(TARGET)
 
 clean-all:
-        rm -rf build bin
+	rm -rf build bin
 
