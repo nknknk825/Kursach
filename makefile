@@ -6,8 +6,8 @@ CFLAGS = -Wall -I./src/include
 TARGET = bin/myapp
 
 # === Исходные и объектные файлы ===
-SRCS = src/main/main.c src/core/app.c src/core/funct.c src/core/krnt.c
-OBJS = build/main.o build/app.o build/funct.o build/krnt.o
+SRCS = src/main/main.c src/core/app.c src/core/funct.c src/core/krnt.c src/core/rpzt.c
+OBJS = build/main.o build/app.o build/funct.o build/krnt.o build/rpzt.o
 
 # === Цель по умолчанию ===
 all: $(TARGET)

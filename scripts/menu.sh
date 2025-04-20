@@ -3,7 +3,9 @@ clear
 
 . ./scripts/helpers/variables.sh --source-only
 . ./scripts/helpers/functions.sh --source-only
+
 . ./scripts/helpers/p1.sh --source-only
+. ./scripts/helpers/p2.sh --source-only
 
 export LC_NUMERIC=C
 
@@ -38,21 +40,45 @@ out_menu() {
 			case $fun in
 
 				1)
-                                        style "Диапазон длинны: [2;1000]" $yellow
-                                        while true;do
-                                                is_number "	Ведите длинну массива: "
-                                                if [ "$num" -gt "1" ]; then
-                                                        if [ "$num" -lt "1001" ]; then break
-                                                        else
-                                                                clear_line
-                                                                style "	Error: Число ($num) > 1000" $red
-                                                        fi
-                                                else
-                                                        clear_line
-                                                        style "	Error: Число ($num) <= 1" $red
-                                                fi
-                                        done
-                                        n=$num
+                    style "Диапазон длинны: [2;1000]" $yellow
+                    while true;do
+                            is_number "	Ведите длинну массива: " '^[0-9]+$'
+                            if [ "$num" -gt "1" ]; then
+                                    if [ "$num" -lt "1001" ]; then break
+                                    else
+                                            clear_line
+                                            style "	Error: Число ($num) > 1000" $red
+                                    fi
+                            else
+                                    clear_line
+                                    style "	Error: Число ($num) <= 1" $red
+                            fi
+                    done
+                    n=$num
+				;;&
+
+				2)
+					style "Диапазон длины: (0.00001; 0.5)" $yellow
+
+					while true; do
+					    is_number "Введите длину массива: " '^[0-9]*\.?[0-9]+$'
+
+					    # Проверка: num > 0.00001
+					    valid_min=$(echo "$num > 0.00001" | bc -l)
+					    # Проверка: num < 0.5
+					    valid_max=$(echo "$num < 0.5" | bc -l)
+
+					    if [[ "$valid_min" -eq 1 && "$valid_max" -eq 1 ]]; then
+					        break
+					    elif [[ "$valid_max" -ne 1 ]]; then
+					        clear_line
+					        style "Ошибка: число ($num) > 0.5" $red
+					    else
+					        clear_line
+					        style "Ошибка: число ($num) <= 0.00001" $red
+					    fi
+					done
+                    eps=$num
 				;;&
 
 				[1-2])
@@ -60,7 +86,7 @@ out_menu() {
 					out_zast
 					style "Данные из программы успешно считанны!" $green
 					pg${fun} $fun
-				;;
+				break;;
 
 				3)
 					break 2

@@ -3,7 +3,6 @@
 #include "funct.h"
 
 void control_calc(struct AppParams ap_pr) {
-//	float* t_in, Uvx_in, Uvix_in;
 	float t[N], Uvx[N], Uvix[N];
 
 	form_time(ap_pr, t);

@@ -22,7 +22,7 @@ clear_line() {
 }
 
 is_number() {
-        re='^[0-9]+$'
+        re="$2"
         num=0
         style "$1" $blue n
 

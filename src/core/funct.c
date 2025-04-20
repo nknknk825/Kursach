@@ -33,6 +33,30 @@ void form_Uvix(struct AppParams ap_pr, float* Uvx, float* Uvix) {
 	}
 }
 
+float parametr(int n, float* t, float* U) {
+    float Umax = U[0], Umin = U[0];
+
+    // Поиск Umax и Umin
+    for (int i = 1; i < n; i++) {
+        if (U[i] > Umax) Umax = U[i];
+        if (U[i] < Umin) Umin = U[i];
+    }
+
+    // Уровень 0.5 от амплитуды
+    float threshold = Umin + 0.5 * (Umax - Umin);
+    float dt = (t[n - 1] - t[0]) / (n - 1);
+    float dlit = 0.0;
+
+    // Подсчёт длительности интервала выше уровня
+    for (int i = 0; i < n; i++) {
+        if (U[i] >= threshold) {
+            dlit += dt;
+        }
+    }
+
+    return dlit;
+}
+
 void form_tabl1(int n, float* t, float* Uvx, float* Uvix) {
 	for (int i = 0; i < n; i++) {
 		if (i<(n-1)) printf("%g ", t[i]);
