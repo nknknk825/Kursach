@@ -1,33 +1,44 @@
-# компилятор
+# === Компилятор и флаги ===
 CC = gcc
+CFLAGS = -Wall -I./src/include
 
-# Флаги компиляции
-CFLAGS = -Wall -g
+# === Целевой исполняемый файл ===
+TARGET = bin/myapp
 
-CCF = $(CC) $(CFLAGS)
+# === Исходные и объектные файлы ===
+SRCS = src/main/main.c src/core/app.c src/core/funct.c src/core/krnt.c
+OBJS = build/main.o build/app.o build/funct.o build/krnt.o
 
-TRG = bin/myapp
+# === Цель по умолчанию ===
+all: $(TARGET)
 
-# Исходники и объектники
-SOR = $(wildcard src/*.c)
-OBJ = $(patsubst src/%.c, build/%.o, $(SOR))
-
-all: $(TRG)
-
-$(TRG): $(OBJ)
+# === Правило сборки итогового файла ===
+$(TARGET): $(OBJS)
 	@mkdir -p bin
-	$(CCF) -o $@ $<
+	$(CC) $(OBJS) -o $(TARGET)
+	@echo "✅ Скомпилировано: $(TARGET)"
 
-build/%.o: src/%.c
+# === Правило сборки объектных файлов ===
+build/main.o: src/main.c
 	@mkdir -p build
-	$(CCF) -c -o $@ $<
+	$(CC) $(CFLAGS) -c $< -o $@
+	@echo "📦 main: $<"
 
+build/%.o: src/core/%.c
+	@mkdir -p build
+	$(CC) $(CFLAGS) -c $< -o $@
+	@echo "📦 core: $<"
+
+
+# === Запуск программы ===
 run:
 	./scripts/menu.sh
 
+
+# === Очистка всех сборок ===
 clean:
 	rm -rf build/*.o $(TARGET)
+	@echo "🧹 Очистка завершена."
 
-clean-all:
-	rm -rf build bin
+.PHONY: all clean run
 
