@@ -1,28 +1,12 @@
 #!/bin/bash
 clear
+
 . ./scripts/helpers/variables.sh --source-only
 . ./scripts/helpers/functions.sh --source-only
+. ./scripts/helpers/p1.sh --source-only
 
-pg1() {
-    out_data=()
-	inp_data=(1 11 12 12 10 35 22.5 5 25 20 150)
+export LC_NUMERIC=C
 
-    while read -r line;do
-        out_data+=("$line")
-    done <<< "$(./bin/myapp ${inp_data[@]})"
-
-
-	style "Результат программы: " $yellow
-
-	read -a arry <<< "${out_data[@]:0:1}"
-	printf "${yellow}%-6s %-6s %-6s %-6s${nc}\n" "${arry[0]}" "${arry[1]}" "${arry[2]}" "${arry[3]}"
-
-	let "len=${#out_data[@]}-1"
-    for arr in "${out_data[@]:0:$len}";do
-		printf "	${yellow}%-6s${nc} %-6s" "${arr[0]}" "${arr[1]}"
-		printf "	%-6s %-6s\n" "${arr[2]}" "${arr[3]}"
-    done
-}
 
 out_zast(){
 	while read -r line;do
@@ -49,9 +33,10 @@ out_menu() {
 			else num=2; fi
 
 			style "Выберите действие 0-${num}: " $blue n
-			read num
+			read fun
 
-			case $num in
+			case $fun in
+
 				1)
                                         style "Диапазон длинны: [2;1000]" $yellow
                                         while true;do
@@ -67,14 +52,14 @@ out_menu() {
                                                         style "	Error: Число ($num) <= 1" $red
                                                 fi
                                         done
+                                        n=$num
 				;;&
+
 				[1-2])
 					clear
 					out_zast
 					style "Данные из программы успешно считанны!" $green
-					pg1
-#					start_func $num
-					break
+					pg${fun} $fun
 				;;
 
 				3)
