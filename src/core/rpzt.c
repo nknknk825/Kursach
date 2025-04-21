@@ -12,9 +12,7 @@ void approx_value(struct AppParams ap_pr) {
 	float p = 1;
 	float par = 1e10;
 	float par1 = 0;
-
-
-	ap_pr.n = 11;
+	
 	printf("n parametr pogrechnost\n");
 	while (p > ap_pr.eps) {
 

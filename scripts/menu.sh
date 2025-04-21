@@ -27,7 +27,7 @@ out_menu() {
 		for indx in "${!variant_menu[@]}";do
 			if [ "$indx" != "2" ];then
 				style "${variant_menu[${indx}]}" $yellow
-			elif [[ "$indx" == "2" && "${#out_data[@]}" -gt "0" ]];then
+			elif [[ "$indx" == "2" && "${#t[@]}" -gt "0" ]];then
 				style "${variant_menu[${indx}]}" $i_yellow
 			fi
 		done
@@ -67,7 +67,7 @@ out_menu() {
 				2)
 					style "Ведите погрешность eps:" $yellow
 					style "Диапазон длины: (0.00001; 0.5)" $yellow
-
+					n=11
 					while true; do
 					    is_number "Введите длину массива: " '^[0-9]*\.?[0-9]+$'
 
@@ -103,10 +103,11 @@ out_menu() {
 					style "Данные успешно записаны в файл!" $yellow
 					style "Вывести данные на экран?(y/n)" $blue n
 					read nn
-					if [ "$nn" == "y" ];then cat data/*;fi
-
-				    style "-> enter для окончания просмотра" $yellow n
-				    read
+					if [ "$nn" == "y" ];then
+						cat data/*
+					    style "-> enter для окончания просмотра" $yellow n
+					    read
+				 	fi
 					break 2
 				;;
 
