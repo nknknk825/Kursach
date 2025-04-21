@@ -1,7 +1,8 @@
 #!/bin/sh
 
 pg2() {
-	inp_data=("$1 11 12 12 10 35 22.5 5 25 20 150 $eps")
+	n=11
+	inp_data=("$1 $n ${def_data[@]} $eps")
 	out_data=()
 
     while read -r line;do
@@ -11,7 +12,7 @@ pg2() {
     style "Результат программы: " $yellow
 #	echo "${out_data[@]}"
     read -a header <<< "${out_data[0]}"
-    printf "\n  ${yellow}%7s %7s %9s{nc}\n" " ${header[0]}" "${header[1]}" "${header[2]}"
+    printf "\n  ${yellow}%7s %7s %9s${nc}\n" " ${header[0]}" "${header[1]}" "${header[2]}"
 
     while read -a arr; do
         printf "    ${yellow}%6d${nc} %8.3f %8.3f%%\n" \

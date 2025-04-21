@@ -67,7 +67,6 @@ out_menu() {
 				2)
 					style "Ведите погрешность eps:" $yellow
 					style "Диапазон длины: (0.00001; 0.5)" $yellow
-					n=11
 					while true; do
 					    is_number "Введите длину массива: " '^[0-9]*\.?[0-9]+$'
 
@@ -140,6 +139,7 @@ while true;do
 	style "Желаете перезапустить программу? (y/n) " $blue n
 	read yn
 	if [ "${yn}" == "n" ];then break;fi
+	clear
 done
 
 style "\nПрограмма успешно завершена" $green

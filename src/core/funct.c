@@ -58,22 +58,21 @@ float parametr(int n, float* t, float* U) {
 }
 
 void form_tabl1(int n, float* t, float* Uvx, float* Uvix) {
-	for (int i = 0; i < n; i++) {
-		if (i<(n-1)) printf("%g ", t[i]);
-		else printf("%g\n",t[i]);
-	}
 
-    for (int i = 0; i < n; i++) {
-        if (i<(n-1)) printf("%g ", Uvx[i]);
-        else printf("%g\n",Uvx[i]);
-    }
-
-    for (int i = 0; i < n; i++) {
-        if (i<(n-1)) printf("%g ", Uvix[i]);
-        else printf("%g\n",Uvix[i]);
+    for (int i = 0; i < n*3; i++) {
+    	if (i<n){
+			if (i<(n-1)) printf("%.3g ", t[i]);
+			else printf("%.3g\n",t[i]);
+        } else if (i<n*2) {
+        	if (i<(n*2-1)) printf("%.3g ", Uvx[i-n]);
+    	    else printf("%.3g\n",Uvx[i-n]);
+        } else {
+        	if (i<(n*3-1)) printf("%.3g ", Uvix[i-n*2]);
+	        else printf("%.3g\n",Uvix[i-n*2]);
+        }
     }
 	printf("№ t Uvx Uvix\n");
     for (int i = 0; i < n; i++) {
-        printf("%d %g %g %g\n", i, t[i], Uvx[i], Uvix[i]);
+        printf("%d %.3g %.3g %.3g\n", i+1, t[i], Uvx[i], Uvix[i]);
     }
 }

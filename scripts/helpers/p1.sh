@@ -2,7 +2,7 @@
 
 pg1() {
     out_data=()
-    inp_data=("$fun $n 12 12 10 35 22.5 5 25 20 150")
+    inp_data=("$fun $n ${def_data[@]}")
 
     t=()
     Uvx=()
@@ -33,10 +33,6 @@ pg1() {
 
 
     style "Результат программы: " $yellow
-
-    echo "	t: ${t[@]}"
-    echo "	Uvx: ${Uvx[@]}"
-    echo "	Uvix: ${Uvix[@]}"
 
     read -a header <<< "${out_data[0]}"
     printf "\n	${yellow}%-2s %7s %9s %8s${nc}\n" " ${header[0]}" "${header[1]}" "${header[2]}" "${header[3]}"
