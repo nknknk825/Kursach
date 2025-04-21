@@ -5,10 +5,13 @@ clear
 . ./scripts/helpers/functions.sh --source-only
 
 . ./scripts/helpers/p1.sh --source-only
-. ./scripts/helpers/p2.sh --source-only
+. ./scripts/helpers/p2.sh --source-onlyK
+. ./scripts/helpers/file_output.sh --source-onlyK
+
 
 export LC_NUMERIC=C
 
+N=1000
 
 out_zast(){
 	while read -r line;do
@@ -38,8 +41,12 @@ out_menu() {
 			read fun
 
 			case $fun in
+				1|2)
+					clear
+				;;&
 
 				1)
+					style "Ведите n точек:" $yellow
                     style "Диапазон длинны: [2;1000]" $yellow
                     while true;do
                             is_number "	Ведите длинну массива: " '^[0-9]+$'
@@ -58,6 +65,7 @@ out_menu() {
 				;;&
 
 				2)
+					style "Ведите погрешность eps:" $yellow
 					style "Диапазон длины: (0.00001; 0.5)" $yellow
 
 					while true; do
@@ -84,11 +92,21 @@ out_menu() {
 				[1-2])
 					clear
 					out_zast
+
 					style "Данные из программы успешно считанны!" $green
 					pg${fun} $fun
 				break;;
 
 				3)
+					out_file
+					clear
+					style "Данные успешно записаны в файл!" $yellow
+					style "Вывести данные на экран?(y/n)" $blue n
+					read nn
+					if [ "$nn" == "y" ];then cat data/*;fi
+
+				    style "-> enter для окончания просмотра" $yellow n
+				    read
 					break 2
 				;;
 

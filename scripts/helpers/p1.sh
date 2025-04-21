@@ -12,14 +12,17 @@ pg1() {
 
     while read -r line;do
         case $i in
+        	[0-2])
+        		read -a lin <<<"$line"
+        	;;&
             0)
-                t=("t: $line")
+                t=("${lin[@]}")
             ;;
             1)
-                Uvx=("Uvx: $line")
+                Uvx=("${lin[@]}")
             ;;
             2)
-                Uvix=("Uvix: $line")
+                Uvix=("${lin[@]}")
             ;;
             *)
                 out_data+=("$line")
@@ -31,9 +34,9 @@ pg1() {
 
     style "Результат программы: " $yellow
 
-    echo "	${t[@]}"
-    echo "	${Uvx[@]}"
-    echo "	${Uvix[@]}"
+    echo "	t: ${t[@]}"
+    echo "	Uvx: ${Uvx[@]}"
+    echo "	Uvix: ${Uvix[@]}"
 
     read -a header <<< "${out_data[0]}"
     printf "\n	${yellow}%-2s %7s %9s %8s${nc}\n" " ${header[0]}" "${header[1]}" "${header[2]}" "${header[3]}"

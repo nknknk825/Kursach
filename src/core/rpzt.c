@@ -1,3 +1,4 @@
+
 #include "stdio.h"
 #include "globals.h"
 
@@ -15,7 +16,7 @@ void approx_value(struct AppParams ap_pr) {
 
 	ap_pr.n = 11;
 	printf("n parametr pogrechnost\n");
-	while (p > ap_pr.eps && ap_pr.n <= N) {
+	while (p > ap_pr.eps) {
 
 	    form_time(ap_pr, t);
 	    form_Uvx(ap_pr, t, Uvx);
@@ -29,5 +30,9 @@ void approx_value(struct AppParams ap_pr) {
 
 		par = par1;
 		ap_pr.n = 2*ap_pr.n;
+		if (ap_pr.n > N) {
+			//printf("Достигнут предел массива (%d элементов). Останов.\n", N);
+		    break;
+		}
 	}
 }
