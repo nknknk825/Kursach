@@ -2,6 +2,7 @@
 myapp
 
 data/*
+output/*
 bin/*
 build/*
 

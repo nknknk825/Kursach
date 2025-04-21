@@ -1,7 +1,7 @@
 #!/bin/sh
 
 pg2() {
-	n=11
+	n=2
 	inp_data=("$1 $n ${def_data[@]} $eps")
 	out_data=()
 

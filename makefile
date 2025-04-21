@@ -34,11 +34,13 @@ build/%.o: src/core/%.c
 run:
 	./scripts/menu.sh
 
+lss:
+	@echo "\033[0;34mbin  build  config  data  scripts  src\033[0m  makefile  \033[0;34moutput  doc\033[0m"
 
 # === Очистка всех сборок ===
 clean:
 	rm -rf build/*.o $(TARGET)
 	@echo "🧹 Очистка завершена."
 
-.PHONY: all clean run
+.PHONY: all clean run lss
 
