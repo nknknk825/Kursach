@@ -11,7 +11,7 @@ clear
 
 export LC_NUMERIC=C
 
-N=1000
+N=10000
 
 out_zast(){
 	while read -r line;do
@@ -43,18 +43,15 @@ out_menu() {
 			case $fun in
 				1|2)
 					clear
-				;;&
-
-				1)
 					style "Ведите n точек:" $yellow
-                    style "Диапазон длинны: [2;1000]" $yellow
+                    style "Диапазон n: [2;${N}]" $yellow
                     while true;do
-                            is_number "	Ведите длинну массива: " '^[0-9]+$'
+                            is_number "	Ведите n: " '^[0-9]+$'
                             if [ "$num" -gt "1" ]; then
-                                    if [ "$num" -lt "1001" ]; then break
+                                    if [ "$num" -lt "10001" ]; then break
                                     else
                                             clear_line
-                                            style "	Error: Число ($num) > 1000" $red
+                                            style "	Error: Число ($num) > 10000" $red
                                     fi
                             else
                                     clear_line
@@ -66,26 +63,28 @@ out_menu() {
 
 				2)
 					style "Ведите погрешность eps:" $yellow
-					style "Диапазон длины: (0.00001; 0.5)" $yellow
+					style "Диапазон eps: [0.01; 99.99]%" $yellow
 					while true; do
-					    is_number "Введите длину массива: " '^[0-9]*\.?[0-9]+$'
+					    is_number "	Введите eps: " '^[0-9]*\.?[0-9]+$'
 
 					    # Проверка: num > 0.00001
-					    valid_min=$(echo "$num > 0.00001" | bc -l)
+					    valid_min=$(echo "$num > 0.01" | bc -l)
 					    # Проверка: num < 0.5
-					    valid_max=$(echo "$num < 0.5" | bc -l)
+					    valid_max=$(echo "$num < 99.99" | bc -l)
 
 					    if [[ "$valid_min" -eq 1 && "$valid_max" -eq 1 ]]; then
 					        break
 					    elif [[ "$valid_max" -ne 1 ]]; then
 					        clear_line
-					        style "Ошибка: число ($num) > 0.5" $red
+					        style "	Ошибка: число ($num) > 99.99" $red
 					    else
 					        clear_line
-					        style "Ошибка: число ($num) <= 0.00001" $red
+					        style "	Ошибка: число ($num) <= 0.01" $red
 					    fi
 					done
                     eps=$num
+                    echo "$eps"
+                    read
 				;;&
 
 				[1-2])
