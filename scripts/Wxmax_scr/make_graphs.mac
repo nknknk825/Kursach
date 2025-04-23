@@ -1,0 +1,12 @@
+t : read_list("data/massiv_t.txt")$
+Uvx : read_list("data/massiv_Uvx.txt")$
+Uvix : read_list("data/massiv_Uvix.txt")$
+
+set_plot_option([gnuplot_term, png])$
+set_plot_option([gnuplot_out_file, "data/graphs/graph_Uvx.png"])$
+set_plot_option([gnuplot_preamble, "set grid; set xlabel 't'; set ylabel 'Uvx';"])$
+plot2d([discrete, makelist([t[i], Uvx[i]], i, 1, length(t))], [style, linespoints])$
+
+set_plot_option([gnuplot_out_file, "data/graphs/graph_Uvix.png"])$
+set_plot_option([gnuplot_preamble, "set grid; set xlabel 't'; set ylabel 'Uvix';"])$
+plot2d([discrete, makelist([t[i], Uvix[i]], i, 1, length(t))], [style, linespoints])$

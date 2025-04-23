@@ -7,14 +7,16 @@ out_file() {
 		"./data/massiv_Uvx.txt"
 		"./data/massiv_Uvix.txt")
 
-	var_sf=("t" "Uvx" "Uvix")
-	for i in {0..2};do
-	echo "${var_sf[i]}" > "${var_file[i]}"
-	done
-
 	for i in "${!t[@]}";do
-		echo "${t[$i]}" >> ${var_file[0]}
-		echo "${Uvx[$i]}" >> ${var_file[1]}
-		echo "${Uvix[$i]}" >> ${var_file[2]}
+		if [ "$i" == "0" ];then
+			echo "${t[$i]}" > ${var_file[0]}
+			echo "${Uvx[$i]}" > ${var_file[1]}
+			echo "${Uvix[$i]}" > ${var_file[2]}
+		else
+			echo "${t[$i]}" >> ${var_file[0]}
+			echo "${Uvx[$i]}" >> ${var_file[1]}
+			echo "${Uvix[$i]}" >> ${var_file[2]}
+		fi
 	done
+	maxima -b scripts/Wxmax_scr/make_graphs.mac > /dev/null 2>&1
 }

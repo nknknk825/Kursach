@@ -83,8 +83,6 @@ out_menu() {
 					    fi
 					done
                     eps=$num
-                    echo "$eps"
-                    read
 				;;&
 
 				[1-2])
@@ -99,10 +97,12 @@ out_menu() {
 					out_file
 					clear
 					style "Данные успешно записаны в файл!" $yellow
-					style "Вывести данные на экран?(y/n)" $blue n
+					style "Графики успешно нарисованы!" $yellow
+					style "Вывести открыть графики (y/n)? " $blue n
 					read nn
 					if [ "$nn" == "y" ];then
-						cat data/*
+						eog data/graphs/graph_Uvx.png > /dev/null 2>&1
+						eog data/graphs/graph_Uvix.png > /dev/null 2>&1
 					    style "-> enter для окончания просмотра" $yellow n
 					    read
 				 	fi

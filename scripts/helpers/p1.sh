@@ -32,16 +32,16 @@ pg1() {
     style "Результат программы: " $yellow
 
     read -a header <<< "${out_data[0]}"
-    printf "\n	${yellow}%-2s %7s %9s %8s${nc}\n" " №" "t" "Uvx" "Uvix"
+    printf "\n	${yellow}%-4s %7s %9s %8s${nc}\n" " №" "t" "Uvx" "Uvix"
 
-    printf " %-2s %7s %9s %8s\n" "№" "t" "Uvx" "Uvix" > "output/table_p1.txt"
+    printf " %-4s %7s %9s %8s\n" "№" "t" "Uvx" "Uvix" > "output/table_p1.txt"
 
     for i in "${!t[@]}"; do
-        printf "	${yellow}%2d${nc} %8.1f %8.1f %8.1f\n" \
-            "$i" "${t[$i]}" "${Uvx[$i]}" "${Uvix[$i]}"
+        printf "	${yellow}%4d${nc} %8.1f %8.1f %8.1f\n" \
+            "$((i+1))" "${t[$i]}" "${Uvx[$i]}" "${Uvix[$i]}"
 
-                    printf "%2d %8.1f %8.1f %8.1f\n" \
-            "$i" "${t[$i]}" "${Uvx[$i]}" "${Uvix[$i]}" >> "output/table_p1.txt"
+                    printf "%4d %8.1f %8.1f %8.1f\n" \
+            "$((i+1))" "${t[$i]}" "${Uvx[$i]}" "${Uvix[$i]}" >> "output/table_p1.txt"
 
     done
     style "-> enter для окончания просмотра" $yellow n
