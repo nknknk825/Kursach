@@ -34,10 +34,10 @@ out_menu() {
 		echo
 		while true;do
 
-			if [ "${#out_data[@]}" -gt "0" ];then num=3
+			if [ "${#t[@]}" -gt "0" ];then num=3
 			else num=2; fi
 
-			style "Выберите действие 0-${num}: " $blue n
+			style "Выберите действие 1-${num} или q для выхода: " $blue n
 			read fun
 
 			case $fun in
@@ -62,13 +62,14 @@ out_menu() {
 				;;&
 
 				2)
+					t=()
 					style "Ведите погрешность eps:" $yellow
-					style "Диапазон eps: [0.01; 99.99]%" $yellow
+					style "Диапазон eps: [0.001; 99.99]%" $yellow
 					while true; do
 					    is_number "	Введите eps: " '^[0-9]*\.?[0-9]+$'
 
 					    # Проверка: num > 0.00001
-					    valid_min=$(echo "$num > 0.01" | bc -l)
+					    valid_min=$(echo "$num > 0.0009" | bc -l)
 					    # Проверка: num < 0.5
 					    valid_max=$(echo "$num < 99.99" | bc -l)
 
@@ -79,7 +80,7 @@ out_menu() {
 					        style "	Ошибка: число ($num) > 99.99" $red
 					    else
 					        clear_line
-					        style "	Ошибка: число ($num) <= 0.01" $red
+					        style "	Ошибка: число ($num) < 0.0009" $red
 					    fi
 					done
                     eps=$num
@@ -101,15 +102,15 @@ out_menu() {
 					style "Вывести открыть графики (y/n)? " $blue n
 					read nn
 					if [ "$nn" == "y" ];then
+					    style "-> enter для окончания просмотра" $yellow n
 						eog data/graphs/graph_Uvx.png > /dev/null 2>&1
 						eog data/graphs/graph_Uvix.png > /dev/null 2>&1
-					    style "-> enter для окончания просмотра" $yellow n
 					    read
 				 	fi
 					break 2
 				;;
 
-				0)
+				q)
 					style "\nУспешно вышли из программы" $green
 					exit
 				;;

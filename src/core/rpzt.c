@@ -24,8 +24,8 @@ void approx_value(struct AppParams ap_pr) {
 		par1 = parametr(ap_pr.n, dt, Uvix);
 		p = fabs(par-par1)/fabs(par1);
 
-		if (p > 1) p = 100;
-		printf("%d  %g  %.3g\n", ap_pr.n, par1, p);
+		if (p > 1) p = 1;
+		printf("%d  %g  %g\n", ap_pr.n, par1, p);
 
 		par = par1;
 		ap_pr.n = 2*ap_pr.n;

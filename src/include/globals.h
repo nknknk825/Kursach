@@ -1,7 +1,7 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
-#define N 1000
+#define N 10000
 
 struct AppParams {
     int n;

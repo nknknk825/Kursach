@@ -13,14 +13,16 @@ pg2() {
 #	echo "${out_data[@]}"
     read -a header <<< "${out_data[0]}"
     printf "\n  ${yellow}%7s %12s %14s${nc}\n" " ${header[0]}" "${header[1]}" "${header[2]}"
-    printf "%7s %12s %14s\n" "${header[0]}" "${header[1]}" "${header[2]}" > "./output/table_p2.txt"
+    printf "%7s %12s %14s\n" "${header[0]}" "${header[1]}" "${header[2]}" > "data/tabls/table_p2.txt"
 
     while read -a arr; do
-        printf "    ${yellow}%6d${nc} %10.3f %12.3f%%\n" \
-            "${arr[0]}" "${arr[1]}" "${arr[2]}"
+    	num=${arr[2]}
+    	num=$(echo "${arr[2]} * 100" | bc -l)
+        printf "    ${yellow}%6d${nc} %10.3f %12f%%\n" \
+            "${arr[0]}" "${arr[1]}" "${num}"
 
-        printf "%7d %10.3f %12.3f%%\n" \
-            "${arr[0]}" "${arr[1]}" "${arr[2]}" >> "./output/table_p2.txt"
+        printf "%7d %10.3f %12f%%\n" \
+            "${arr[0]}" "${arr[1]}" "${num}" >> "data/tabls/table_p2.txt"
 
     	if [ "${arr[0]}" -gt "$((N/2))" ];then
     		style "	Достигнут предел массива (${N} элементов). Остановка" $red
