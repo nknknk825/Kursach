@@ -1,9 +1,8 @@
 
 program/data/massiv_*
-program/data/graphs/*
-program/data/tabls/*
+program/data/graphs/grap_*
+program/data/tabls/table_*
 
 program/bin/*
 program/build/*
-doc/*
 
