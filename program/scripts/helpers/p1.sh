@@ -1,65 +1,70 @@
 #!/bin/sh
 
+# Функция pg1 — вызывает бинарный файл, считывает и обрабатывает его вывод
 pg1() {
-    out_data=()
-    inp_data=("$1 $n")
+    out_data=()                                # Очистка массива выходных данных
+    inp_data=("$1 $n")                         # Формирование аргументов для вызова бинарного приложения
 
-    t=()
-    Uvx=()
-    Uvix=()
+    t=()                                       # Массив временных точек
+    Uvx=()                                     # Массив значений Uvx
+    Uvix=()                                    # Массив значений Uvix
 
-    i=0
+    i=0                                        # Счётчик строк
 
-    while read -r line;do
+    # Чтение вывода программы построчно
+    while read -r line; do
         case $i in
-        	[0-2])
-        		read -a lin <<<"$line"
-        	;;&
+            [0-2])
+                read -a lin <<<"$line"         # Разбивает строку в массив
+            ;;&                                # Продолжает выполнение следующего условия case
             0)
-                t=("${lin[@]}")
+                t=("${lin[@]}")                # Первая строка — массив t
             ;;
             1)
-                Uvx=("${lin[@]}")
+                Uvx=("${lin[@]}")              # Вторая строка — массив Uvx
             ;;
             2)
-                Uvix=("${lin[@]}")
+                Uvix=("${lin[@]}")             # Третья строка — массив Uvix
             ;;
         esac
-        let "i+=1"
-    done <<< "$(./bin/myapp ${inp_data[@]})"
+        let "i+=1"                             # Увеличение счётчика
+    done <<< "$(./bin/myapp ${inp_data[@]})"   # Вызов внешней программы и обработка её вывода
 
-	check_out="y"
-	if [ "${#t[@]}" -gt "20" ];then
-		style "Желаете ли вывести таблицу, в ней больше 20 элементов ? (y/n) " $blue n
-		read -rsn1 check_out
-	fi
-
-
-	if [ "$check_out" == "y" ];then
-	    style "Результат программы: " $yellow
-
-	    read -a header <<< "${out_data[0]}"
-	    printf "\n	${yellow}%-4s %7s %9s %8s${nc}\n" "   №" "t" "Uvx" "Uvix"
-
-	    printf " %-4s %7s %9s %8s\n" "№" "t" "Uvx" "Uvix" > "data/tabls/table_p1.txt"
-
-	    for i in "${!t[@]}"; do
-	        printf "	${yellow}%4d${nc} %8.1f %8.1f %8.1f\n" \
-	            "$((i+1))" "${t[$i]}" "${Uvx[$i]}" "${Uvix[$i]}"
-
-	                    printf "%4d %8.1f %8.1f %8.1f\n" \
-	            "$((i+1))" "${t[$i]}" "${Uvx[$i]}" "${Uvix[$i]}" >> "data/tabls/table_p1.txt"
-
-	    done
-	    style "-> enter для окончания просмотра" $yellow n
-	    read
+    check_out="y"
+    if [ "${#t[@]}" -gt "20" ]; then
+        style "Желаете ли вывести таблицу, в ней больше 20 элементов ? (y/n) " $blue n
+        read -rsn1 check_out                   # Чтение ответа пользователя без вывода на экран
     fi
 
-	printf " %-4s %7s %9s %8s\n" "№" "t" "Uvx" "Uvix" > "data/tabls/table_p1.txt"
+    if [ "$check_out" == "y" ]; then
+        style "Результат программы: " $yellow
 
-	for i in "${!t[@]}"; do
-                printf "%4d %8.1f %8.1f %8.1f\n" \
-    "$((i+1))" "${t[$i]}" "${Uvx[$i]}" "${Uvix[$i]}" >> "data/tabls/table_p1.txt"
-	done
-    clear
+        read -a header <<< "${out_data[0]}"   # Чтение первой строки как заголовок (не используется далее)
+
+        # Печать заголовка таблицы в консоль
+        printf "\n	${yellow}%-6s %7s %9s %8s${nc}\n" "   №" "t" "Uvx" "Uvix"
+
+        # Запись заголовка таблицы в файл
+        printf "%-4s %7s %9s %8s\n" "№" "t" "Uvx" "Uvix" > "data/tabls/table_p1.txt"
+
+        # Печать и запись каждой строки таблицы
+        for i in "${!t[@]}"; do
+            printf "	${yellow}%4d${nc} %8.1f %8.1f %8.1f\n" \
+                "$((i+1))" "${t[$i]}" "${Uvx[$i]}" "${Uvix[$i]}"
+
+            printf "%4d %8.1f %8.1f %8.1f\n" \
+                "$((i+1))" "${t[$i]}" "${Uvx[$i]}" "${Uvix[$i]}" >> "data/tabls/table_p1.txt"
+        done
+
+        style "-> enter для окончания просмотра" $yellow n
+        read
+    fi
+
+    for i in "${!t[@]}"; do
+        printf "%4d %8.1f %8.1f %8.1f\n" \
+            "$((i+1))" "${t[$i]}" "${Uvx[$i]}" "${Uvix[$i]}" >> "data/tabls/table_p1.txt"
+    done
+
+    clear    # Очистка экрана
 }
+
