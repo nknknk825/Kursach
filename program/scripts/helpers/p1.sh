@@ -54,5 +54,12 @@ pg1() {
 	    style "-> enter для окончания просмотра" $yellow n
 	    read
     fi
+
+	printf " %-4s %7s %9s %8s\n" "№" "t" "Uvx" "Uvix" > "data/tabls/table_p1.txt"
+
+	for i in "${!t[@]}"; do
+                printf "%4d %8.1f %8.1f %8.1f\n" \
+    "$((i+1))" "${t[$i]}" "${Uvx[$i]}" "${Uvix[$i]}" >> "data/tabls/table_p1.txt"
+	done
     clear
 }
