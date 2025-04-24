@@ -88,11 +88,10 @@ out_menu() {
 
 				[1-2])
 					clear
-					out_zast
-
+					style "Данне успешно переданны в программу!" $green
 					style "Данные из программы успешно считанны!" $green
 					pg${fun} $fun
-				break;;
+				;;&
 
 				3)
 					out_file
@@ -106,8 +105,12 @@ out_menu() {
 						eog data/graphs/graph_Uvx.png > /dev/null 2>&1
 					    read
 				 	fi
-					break 2
-				;;
+				;;&
+
+				[1-3])
+					clear
+					out_zast
+				break;;
 
 				q)
 					style "\nУспешно вышли из программы" $green
@@ -132,14 +135,14 @@ start() {
 	out_menu
 	clear
 }
-
-while true;do
-	start
-	style "Желаете перезапустить программу? (y/n) " $blue n
-	read yn
-	if [ "${yn}" == "n" ];then break;fi
-	clear
-done
+start
+#while true;do
+#	start
+#	style "Желаете перезапустить программу? (y/n) " $blue n
+#	read yn
+#	if [ "${yn}" == "n" ];then break;fi
+#	clear
+#done
 
 style "\nПрограмма успешно завершена" $green
 exit
