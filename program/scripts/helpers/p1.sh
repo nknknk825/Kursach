@@ -2,7 +2,7 @@
 
 pg1() {
     out_data=()
-    inp_data=("$fun $n")
+    inp_data=("$1 $n")
 
     t=()
     Uvx=()
@@ -30,8 +30,8 @@ pg1() {
 
 	check_out="y"
 	if [ "${#t[@]}" -gt "20" ];then
-		style "Желаете ли вывести таблицу, в ней больше 20 элементов ?(y/n) " $blue n
-		read check_out
+		style "Желаете ли вывести таблицу, в ней больше 20 элементов ? (y/n) " $blue n
+		read -rsn1 check_out
 	fi
 
 

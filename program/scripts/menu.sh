@@ -37,10 +37,10 @@ out_menu() {
 			if [ "${#t[@]}" -gt "0" ];then num=3
 			else num=2; fi
 
-			style "Выберите действие 1-${num} или q для выхода: " $blue n
-			read fun
+			style "Выберите действие 1-${num} или q для выхода " $blue n
+			read -rsn1 key
 
-			case $fun in
+			case $key in
 				1|2)
 					clear
 					style "Ведите n точек:" $yellow
@@ -62,7 +62,6 @@ out_menu() {
 				;;&
 
 				2)
-					t=()
 					style "Ведите погрешность eps:" $yellow
 					style "Диапазон eps: [0.001; 99.99]%" $yellow
 					while true; do
@@ -90,7 +89,7 @@ out_menu() {
 					clear
 					style "Данне успешно переданны в программу!" $green
 					style "Данные из программы успешно считанны!" $green
-					pg${fun} $fun
+					pg${key} $key
 				;;&
 
 				3)
@@ -98,10 +97,10 @@ out_menu() {
 					clear
 					style "Данные успешно записаны в файл!" $yellow
 					style "Графики успешно нарисованы!" $yellow
-					style "Вывести открыть графики (y/n)? " $blue n
-					read nn
+					style "Вывести открыть графики ? (y/n)" $blue n
+					read -rsn1 nn
 					if [ "$nn" == "y" ];then
-					    style "-> enter для окончания просмотра" $yellow n
+					    style "\n-> enter для окончания просмотра" $yellow n
 						eog data/graphs/graph_Uvx.png > /dev/null 2>&1
 					    read
 				 	fi
@@ -119,7 +118,7 @@ out_menu() {
 
 				*)
 					clear_line
-					style "Erorr: Не верное значение ($num) не входит в промежуток [0;3]!" $red
+					style "\nErorr: Не верное значение ($key) не входит в промежуток [1;$num]!" $red
 				;;
 
 			esac
