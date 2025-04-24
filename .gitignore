@@ -1,4 +1,8 @@
-program/data/*
+
+program/data/massiv_*
+program/data/graphs/*
+program/data/tabls/*
+
 program/bin/*
 program/build/*
 doc/*
