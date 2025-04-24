@@ -104,7 +104,6 @@ out_menu() {
 					if [ "$nn" == "y" ];then
 					    style "-> enter для окончания просмотра" $yellow n
 						eog data/graphs/graph_Uvx.png > /dev/null 2>&1
-						eog data/graphs/graph_Uvix.png > /dev/null 2>&1
 					    read
 				 	fi
 					break 2
