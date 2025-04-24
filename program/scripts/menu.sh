@@ -104,9 +104,8 @@ out_menu() {
                     style "Вывести открыть графики ? (y/n)" $blue n
                     read -rsn1 nn
                     if [ "$nn" == "y" ]; then
-                        style "\n-> enter для окончания просмотра" $yellow n
+                        style "\nЗакройте окно с графиками для продолжения!" $yellow
                         eog data/graphs/graph_Uvx.png > /dev/null 2>&1    # Открытие изображения через eog
-                        read
                     fi
                 ;;&
 
