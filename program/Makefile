@@ -33,6 +33,8 @@ build/%.o: src/core/%.c
 
 # === Запуск программы ===
 run:
+	@mkdir -p data/graphs
+	@mkdir -p data/tabls
 	./scripts/menu.sh
 
 lss:
