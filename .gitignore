@@ -1,8 +1,5 @@
-*.o
-myapp
-
-data/*
-output/*
-bin/*
-build/*
+program/data/*
+program/bin/*
+program/build/*
+doc/*
 
