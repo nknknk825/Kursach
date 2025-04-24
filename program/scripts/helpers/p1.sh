@@ -37,7 +37,7 @@ pg1() {
     fi
 
     if [ "$check_out" == "y" ]; then
-        style "Результат программы: " $yellow
+        style "\nРезультат программы: " $yellow
 
         read -a header <<< "${out_data[0]}"   # Чтение первой строки как заголовок (не используется далее)
 
@@ -56,7 +56,7 @@ pg1() {
                 "$((i+1))" "${t[$i]}" "${Uvx[$i]}" "${Uvix[$i]}" >> "data/tabls/table_p1.txt"
         done
 
-        style "-> enter для окончания просмотра" $yellow n
+        style "\n-> enter для окончания просмотра" $yellow n
         read
     fi
 
