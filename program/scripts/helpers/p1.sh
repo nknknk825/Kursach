@@ -28,23 +28,31 @@ pg1() {
         let "i+=1"
     done <<< "$(./bin/myapp ${inp_data[@]})"
 
+	check_out="y"
+	if [ "${#t[@]}" -gt "20" ];then
+		style "Желаете ли вывести таблицу, в ней больше 20 элементов ?(y/n) " $blue n
+		read check_out
+	fi
 
-    style "Результат программы: " $yellow
 
-    read -a header <<< "${out_data[0]}"
-    printf "\n	${yellow}%-4s %7s %9s %8s${nc}\n" "   №" "t" "Uvx" "Uvix"
+	if [ "$check_out" == "y" ];then
+	    style "Результат программы: " $yellow
 
-    printf " %-4s %7s %9s %8s\n" "№" "t" "Uvx" "Uvix" > "data/tabls/table_p1.txt"
+	    read -a header <<< "${out_data[0]}"
+	    printf "\n	${yellow}%-4s %7s %9s %8s${nc}\n" "   №" "t" "Uvx" "Uvix"
 
-    for i in "${!t[@]}"; do
-        printf "	${yellow}%4d${nc} %8.1f %8.1f %8.1f\n" \
-            "$((i+1))" "${t[$i]}" "${Uvx[$i]}" "${Uvix[$i]}"
+	    printf " %-4s %7s %9s %8s\n" "№" "t" "Uvx" "Uvix" > "data/tabls/table_p1.txt"
 
-                    printf "%4d %8.1f %8.1f %8.1f\n" \
-            "$((i+1))" "${t[$i]}" "${Uvx[$i]}" "${Uvix[$i]}" >> "data/tabls/table_p1.txt"
+	    for i in "${!t[@]}"; do
+	        printf "	${yellow}%4d${nc} %8.1f %8.1f %8.1f\n" \
+	            "$((i+1))" "${t[$i]}" "${Uvx[$i]}" "${Uvix[$i]}"
 
-    done
-    style "-> enter для окончания просмотра" $yellow n
-    read
+	                    printf "%4d %8.1f %8.1f %8.1f\n" \
+	            "$((i+1))" "${t[$i]}" "${Uvx[$i]}" "${Uvix[$i]}" >> "data/tabls/table_p1.txt"
+
+	    done
+	    style "-> enter для окончания просмотра" $yellow n
+	    read
+    fi
     clear
 }
