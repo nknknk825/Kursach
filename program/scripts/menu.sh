@@ -7,8 +7,8 @@ clear    # Очистка экрана
 
 # Подключение вспомогательных частей программы
 . ./scripts/helpers/p1.sh --source-only
-. ./scripts/helpers/p2.sh --source-onlyK    # Возможно, опечатка: должно быть --source-only
-. ./scripts/helpers/file_output.sh --source-onlyK    # Аналогично, стоит проверить суффикс
+. ./scripts/helpers/p2.sh --source-only
+. ./scripts/helpers/file_output.sh --source-only
 
 export LC_NUMERIC=C    # Установка десятичного разделителя как точка
 
@@ -43,7 +43,7 @@ out_menu() {
 
             style "Выберите действие 1-${num} или q для выхода " $blue n
             read -rsn1 key    # Чтение одного символа
-
+			echo
             case $key in
                 1|2)
                     clear
@@ -59,7 +59,7 @@ out_menu() {
                             fi
                         else
                             clear_line
-                            style "	Error: Число ($num) <= 1" $red
+                            style "	Error: Число ($num) < 2" $red
                         fi
                     done
                     n=$num    # Сохранение введённого значения
