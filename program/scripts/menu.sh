@@ -38,8 +38,8 @@ out_menu() {
         while true; do
 
             # Определение доступных пунктов меню
-            if [ "${#t[@]}" -gt "0" ]; then num=3
-            else num=2; fi
+            if [ "${#t[@]}" -gt "0" ]; then num=4
+            else num=3; fi
 
             style "Выберите действие 1-${num} или q для выхода " $blue n
             read -rsn1 key    # Чтение одного символа
@@ -97,15 +97,11 @@ out_menu() {
                 ;;&
 
                 3)
-                    out_file    # Запись результатов в файл
-                    clear
-                    style "Данные успешно записаны в файл!" $yellow
-                    style "Графики успешно нарисованы!" $yellow
-                    style "Вывести открыть графики ? (y/n)" $blue n
-                    read -rsn1 nn
-                    if [ "$nn" == "y" ]; then
-                        style "\nЗакройте окно с графиками для продолжения!" $yellow
-                        eog data/graphs/graph_Uvx.png > /dev/null 2>&1    # Открытие изображения через eog
+                	if [ "$num" == "4" ];then
+                    	out_file    # Запись результатов в файл
+                    else
+	                    clear_line
+	                    style "\nErorr: Не верное значение ($key) не входит в промежуток [1;$num]!" $red
                     fi
                 ;;&
 
@@ -113,6 +109,18 @@ out_menu() {
                     clear
                     out_zast    # Повторный вывод заставки
                     break
+                ;;
+
+                4)
+                	clear
+				    while read -r line; do
+				        style "$line" $yellow    # Цветной вывод строки
+				    done < "config/explantion_paramt.txt"    # Чтение строк из файла
+
+			        style "\n-> enter для окончания просмотра" $yellow n
+			        read
+			        clear
+			        break
                 ;;
 
                 q)
@@ -141,15 +149,6 @@ start() {
 }
 
 start    # Старт программы
-
-# Возможность перезапуска (закомментирована)
-# while true; do
-#     start
-#     style "Желаете перезапустить программу? (y/n) " $blue n
-#     read yn
-#     if [ "${yn}" == "n" ]; then break; fi
-#     clear
-# done
 
 style "\nПрограмма успешно завершена" $green
 exit    # Завершение

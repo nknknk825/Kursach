@@ -54,3 +54,11 @@ no_space() {
         done
 
 }
+
+prgs_bar() {
+	num_b1=$1
+	num_b2=$2
+	text=$3
+	res=$(awk "BEGIN {print ($num_b1 / $num_b2) * 100}")
+	printf "\r${yellow}${text}: %.2f%%${nc}" "$res"
+}
