@@ -28,9 +28,9 @@ out_menu() {
 
         style "Меню программы:" $green
         for indx in "${!variant_menu[@]}"; do
-            if [ "$indx" != "2" ]; then
+            if [ "$indx" != "3" ]; then
                 style "${variant_menu[${indx}]}" $yellow
-            elif [[ "$indx" == "2" && "${#t[@]}" -gt "0" ]]; then
+            elif [[ "$indx" == "3" && "${#t[@]}" -gt "0" ]]; then
                 style "${variant_menu[${indx}]}" $i_yellow
             fi
         done
@@ -97,6 +97,18 @@ out_menu() {
                 ;;&
 
                 3)
+	                xterm \
+					 -geometry 80x31-20+5 \
+					 -bg black \
+					 -bd red \
+					 -fg green \
+					 -fa 'Ubuntu Mono' \
+					 -fs 15 \
+					 -e 'tput civis; ./scripts/xterm_scripts/output_data.sh; tput cnorm'
+
+	            ;;&
+
+                4)
                 	if [ "$num" == "4" ];then
                     	out_file    # Запись результатов в файл
                     else
@@ -105,22 +117,10 @@ out_menu() {
                     fi
                 ;;&
 
-                [1-3])
+                [1-4])
                     clear
                     out_zast    # Повторный вывод заставки
                     break
-                ;;
-
-                4)
-                	clear
-				    while read -r line; do
-				        style "$line" $yellow    # Цветной вывод строки
-				    done < "config/explantion_paramt.txt"    # Чтение строк из файла
-
-			        style "\n-> enter для окончания просмотра" $yellow n
-			        read
-			        clear
-			        break
                 ;;
 
                 q)
