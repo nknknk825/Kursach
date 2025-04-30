@@ -24,15 +24,19 @@ out_file() {
             echo "${Uvx[$i]}" >> ${var_file[1]}
             echo "${Uvix[$i]}" >> ${var_file[2]}
         fi
-        if [ "$n" -ge "1000" ];then
-	        prgs_bar $((i+1)) $n "Прогресс записи в файл"
-        fi
+        prgs_bar $((i+1)) $n "Прогресс записи в файл" &
     done
+    wait
 	clear
 	style "Данные успешно записанны в файл!" $green
 	style "Происходит рисование графиков пожалуйста подождите!" $green
+
     # Запуск Maxima-скрипта для построения графиков
-    maxima -b scripts/Wxmax_scr/make_graphs.mac > /dev/null 2>&1
+    rm data/graphs/*
+    maxima -b scripts/Wxmax_scr/make_graphs.mac > /dev/null 2>&1 &
+    echo -ne "\e[?25l"
+	prgs_grahs $!
+	echo -ne "\e[?25h"
 
     clear
     style "Графики успешно нарисованы!" $yellow
