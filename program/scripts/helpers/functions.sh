@@ -68,7 +68,7 @@ prgs_grahs() {
     pid=$1
     while kill -0 $pid 2>/dev/null;do
         printf "\r${yellow}%20s${nc}" "Генерация графиков$(printf '%.0s.' $(seq 1 $i))       "
-        sleep 0.3
+        sleep 0.2
 
         let "i+=1"
         if [ -f "data/graphs/graph_Uvix.png" ];then break;fi
