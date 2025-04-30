@@ -56,22 +56,19 @@ no_space() {
 }
 
 prgs_bar() {
-	num_b1=$1
-	num_b2=$2
-	text=$3
-	res=$(awk "BEGIN {print ($num_b1 / $num_b2) * 100}")
-	printf "\r${yellow}${text}: %.2f%%${nc}" "$res"
+	res=$(awk "BEGIN {print ($1 / $2) * 100}")
+	printf "\r${yellow}${3}: %.2f%%${nc}" "$res"
 }
 
-prgs_grahs() {
+prgs_t() {
     i=0
-    pid=$1
-    while kill -0 $pid 2>/dev/null;do
-        printf "\r${yellow}%20s${nc}" "Генерация графиков$(printf '%.0s.' $(seq 1 $i))       "
+    echo -ne "\e[?25l"
+    while kill -0 ${1} 2>/dev/null;do
+        printf "\r${yellow}%20s${nc}" "${2}$(printf '%.0s.' $(seq 1 $i))       "
         sleep 0.2
 
         let "i+=1"
-        if [ -f "data/graphs/graph_Uvix.png" ];then break;fi
         if [ "$i" == "4" ];then i=1;fi
     done
+    echo -ne "\e[?25h"
 }

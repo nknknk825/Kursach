@@ -12,8 +12,9 @@ clear    # Очистка экрана
 
 export LC_NUMERIC=C    # Установка десятичного разделителя как точка
 
-N=10000    # Максимальное количество точек
-
+N=15000    # Максимальное количество точек
+#sed -i "5s/.*/#define N $N/" src/include/globals.h
+#make >/dev/null
 # Функция вывода заставки
 out_zast(){
     while read -r line; do
@@ -28,9 +29,9 @@ out_menu() {
 
         style "Меню программы:" $green
         for indx in "${!variant_menu[@]}"; do
-            if [ "$indx" != "3" ]; then
+            if [ "$indx" != "2" ]; then
                 style "${variant_menu[${indx}]}" $yellow
-            elif [[ "$indx" == "3" && "${#t[@]}" -gt "0" ]]; then
+            elif [[ "$indx" == "2" && "${#t[@]}" -gt "0" ]]; then
                 style "${variant_menu[${indx}]}" $i_yellow
             fi
         done
@@ -38,12 +39,12 @@ out_menu() {
         while true; do
 
             # Определение доступных пунктов меню
-            if [ "${#t[@]}" -gt "0" ]; then num=4
-            else num=3; fi
+            if [ "${#t[@]}" -gt "0" ]; then prd=3
+            else prd=2; fi
 
-            style "Выберите действие 1-${num} или q для выхода " $blue n
+            style "Выберите действие 1-${num} и p или q для выхода " $blue n
             read -rsn1 key    # Чтение одного символа
-			echo
+			printf "\n"
             case $key in
                 1|2)
                     clear
@@ -52,7 +53,7 @@ out_menu() {
                     while true; do
                         is_number "	Ведите n: " '^[0-9]+$'    # Проверка ввода целого числа
                         if [ "$num" -gt "1" ]; then
-                            if [ "$num" -lt "10001" ]; then break
+                            if [ "$num" -le "$N" ]; then break
                             else
                                 clear_line
                                 style "	Error: Число ($num) > 10000" $red
@@ -97,19 +98,7 @@ out_menu() {
                 ;;&
 
                 3)
-	                xterm \
-					 -geometry 80x31-20+5 \
-					 -bg black \
-					 -bd red \
-					 -fg green \
-					 -fa 'Ubuntu Mono' \
-					 -fs 15 \
-					 -e 'tput civis; ./scripts/xterm_scripts/output_data.sh; tput cnorm'
-
-	            ;;&
-
-                4)
-                	if [ "$num" == "4" ];then
+                	if [ "$num" == "3" ];then
                     	out_file    # Запись результатов в файл
                     else
 	                    clear_line
@@ -117,7 +106,21 @@ out_menu() {
                     fi
                 ;;&
 
-                [1-4])
+                p)
+                	clear
+                	style "Закройте окно для возврата в меню!" $yellow
+	                xterm \
+					 -geometry 80x31-20+5 \
+					 -bg black \
+					 -bd red \
+					 -fg green \
+					 -fa 'Ubuntu Mono' \
+					 -fs 20 \
+					 -e 'tput civis; ./scripts/xterm_scripts/output_data.sh; tput cnorm'
+
+	            ;;&
+
+                [1-$prd]|p)
                     clear
                     out_zast    # Повторный вывод заставки
                     break
@@ -129,7 +132,7 @@ out_menu() {
 
                 *)
                     clear_line
-                    style "\nErorr: Не верное значение ($key) не входит в промежуток [1;$num]!" $red
+                    style "\nErorr: Не верное значение ($key) не входит в промежуток [1;$num] и p!" $red
                 ;;
 
             esac
