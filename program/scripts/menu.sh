@@ -39,8 +39,8 @@ out_menu() {
         while true; do
 
             # Определение доступных пунктов меню
-            if [ "${#t[@]}" -gt "0" ]; then prd=3
-            else prd=2; fi
+            if [ "${#t[@]}" -gt "0" ]; then con_vr=3
+            else con_vr=2; fi
 
             style "Выберите действие 1-${num} и p или q для выхода " $blue n
             read -rsn1 key    # Чтение одного символа
@@ -98,11 +98,12 @@ out_menu() {
                 ;;&
 
                 3)
-                	if [ "$num" == "3" ];then
+                	if [ "$con_vr" == "3" ];then
                     	out_file    # Запись результатов в файл
                     else
 	                    clear_line
-	                    style "\nErorr: Не верное значение ($key) не входит в промежуток [1;$num]!" $red
+	                    style "\nErorr: Не верное значение ($key) не входит в промежуток [1;$con_vr]!" $red
+	                    break
                     fi
                 ;;&
 
@@ -120,7 +121,7 @@ out_menu() {
 
 	            ;;&
 
-                [1-$prd]|p)
+                [1-$con_vr]|p)
                     clear
                     out_zast    # Повторный вывод заставки
                     break
@@ -132,7 +133,7 @@ out_menu() {
 
                 *)
                     clear_line
-                    style "\nErorr: Не верное значение ($key) не входит в промежуток [1;$num] и p!" $red
+                    style "\nErorr: Не верное значение ($key) не входит в промежуток [1;$con_vr] и p!" $red
                 ;;
 
             esac
