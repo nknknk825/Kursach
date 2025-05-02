@@ -37,16 +37,16 @@ run:
 	@mkdir -p data/tabls
 	./scripts/menu.sh
 
-test:
-	./bin/myapp 30 2
+test1:
+	./bin/myapp 1 20
 
-lss:
-	@echo "\033[0;34mbin  build  config  data  scripts  src\033[0m  makefile  \033[0;34moutput  doc\033[0m"
+test2:
+	./bin/myapp 2 30 0.01
 
 # === Очистка всех сборок ===
 clean:
 	rm -rf build/*.o $(TARGET)
 	@echo "🧹 Очистка завершена."
 
-.PHONY: all clean run lss test
+.PHONY: all clean run lss test1 test2
 
