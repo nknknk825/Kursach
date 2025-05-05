@@ -10,7 +10,7 @@ out_file() {
         "./data/massiv_Uvx.txt"
         "./data/massiv_Uvix.txt"
     )
-
+	i=0
     # Цикл по индексам массива t
     for i in "${!t[@]}"; do
         if [ "$i" == "0" ]; then
@@ -24,7 +24,7 @@ out_file() {
             echo "${Uvx[$i]}" >> ${var_file[1]}
             echo "${Uvix[$i]}" >> ${var_file[2]}
         fi
-        prgs_bar $((i+1)) $n "Запись в файл" "•" "○" &
+        prgs_bar $((i+1)) $n_n "Запись в файл" "•" "○" &
     done
     wait
 	clear
