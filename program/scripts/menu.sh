@@ -56,7 +56,7 @@ out_menu() {
                             if [ "$num" -le "$N" ]; then break
                             else
                                 clear_line
-                                style "	Error: Число ($num) > 10000" $red
+                                style "	Error: Число ($num) > $N" $red
                             fi
                         else
                             clear_line

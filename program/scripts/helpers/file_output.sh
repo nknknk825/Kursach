@@ -24,7 +24,7 @@ out_file() {
             echo "${Uvx[$i]}" >> ${var_file[1]}
             echo "${Uvix[$i]}" >> ${var_file[2]}
         fi
-        prgs_bar $((i+1)) $n "Прогресс записи в файл" &
+        prgs_bar $((i+1)) $n "Запись в файл" "•" "○" &
     done
     wait
 	clear

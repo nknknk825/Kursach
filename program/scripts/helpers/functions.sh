@@ -56,8 +56,21 @@ no_space() {
 }
 
 prgs_bar() {
-	res=$(awk "BEGIN {print ($1 / $2) * 100}")
-	printf "\r${yellow}${3}: %.2f%%${nc}" "$res"
+    res=$(awk "BEGIN {print ($1 / $2) * 100}")
+    int_res=$(echo "scale=0; $res / 4" | bc)
+
+    sym_beg=$4
+    sym_end=$5
+
+    if [ "$int_res" == "0" ];then echo -ne "\e[?25l";fi
+    if [ "$sym_beg" == "" ];then sym_beg="#";fi
+
+    if [ $int_res -gt "0" ]
+    then	str="$(printf '%.0s'"$sym_beg" $(seq 1 ${int_res}))$(printf '%.0s'"$sym_end" $( seq 1 $((25-$int_res)) ) )"
+    else	str="$(printf '%.0s'"$sym_end" $( seq 1 $((25-$int_res)) ) )";fi
+
+    printf "\r${yellow}%s%-25s%s %.2f%%${nc}" "$3 [" "$str" "]" "$res"
+	if [ "$int_res" == "25" ];then echo -ne "\e[?25h";fi
 }
 
 prgs_t() {
