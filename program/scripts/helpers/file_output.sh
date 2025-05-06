@@ -10,23 +10,26 @@ out_file() {
         "./data/massiv_Uvx.txt"
         "./data/massiv_Uvix.txt"
     )
-	i=0
-    # Цикл по индексам массива t
-    for i in "${!t[@]}"; do
-        if [ "$i" == "0" ]; then
-            # Первая строка — перезапись файлов
-            echo "${t[$i]}" > ${var_file[0]}
-            echo "${Uvx[$i]}" > ${var_file[1]}
-            echo "${Uvix[$i]}" > ${var_file[2]}
-        else
-            # Остальные строки — дозапись в файлы
-            echo "${t[$i]}" >> ${var_file[0]}
-            echo "${Uvx[$i]}" >> ${var_file[1]}
-            echo "${Uvix[$i]}" >> ${var_file[2]}
-        fi
-        prgs_bar $((i+1)) $n_n "Запись в файл" "•" "○" &
-    done
-    wait
+
+	{
+	    for i in "${!t[@]}"; do
+	        echo "${t[$i]}"
+	    done
+	} > "${var_file[0]}" &
+
+	{
+	    for i in "${!Uvx[@]}"; do
+	        echo "${Uvx[$i]}"
+	    done
+	} > "${var_file[1]}" &
+
+	{
+	    for i in "${!Uvix[@]}"; do
+	        echo "${Uvix[$i]}"
+	    done
+	} > "${var_file[2]}" &
+
+    prgs_t $! "Запись в файл"
 	clear
 	style "Данные успешно записанны в файл!" $green
 
