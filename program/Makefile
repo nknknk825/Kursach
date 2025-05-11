@@ -16,7 +16,7 @@ all: clean
 # === Правило сборки итогового файла ===
 $(TARGET): $(OBJS)
 	@mkdir -p bin
-	$(CC) $(OBJS) -o $(TARGET)
+	$(CC) $(OBJS) -o $(TARGET) -lm
 	@echo "✅ Скомпилировано: $(TARGET)"
 
 # === Правило сборки объектных файлов ===

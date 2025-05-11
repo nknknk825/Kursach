@@ -15,46 +15,22 @@ void form_time(struct AppParams ap_pr, float* t) {
 // Формирование массива значений Uvx по заданному закону
 void form_Uvx(struct AppParams ap_pr, float* t, float* Uvx) {
     for (int i = 0; i < ap_pr.n; i++) {
-        if (t[i] < ap_pr.t1) {
-            // До t1 — линейный рост
-            Uvx[i] = ap_pr.a * (t[i] - ap_pr.tn);
-        } else {
-            // После t1 — линейное убывание
-            Uvx[i] = ap_pr.a * (ap_pr.t1 - ap_pr.tn) - ap_pr.b * (t[i] - ap_pr.t1);
-        }
+		Uvx[i] = ap_pr.a0 + ap_pr.a1*t[i] + ap_pr.a2*pow(t[i],2);
     }
 }
 
 // Формирование массива значений Uvix на основе Uvx по кусочной линейной аппроксимации
 void form_Uvix(struct AppParams ap_pr, float* Uvx, float* Uvix) {
     for (int i = 0; i < ap_pr.n; i++) {
-        if (Uvx[i] <= ap_pr.Uvx1)
-            Uvix[i] = ap_pr.U1;                        // Меньше порога — константа U1
-        else if (Uvx[i] >= ap_pr.Uvx2)
-            Uvix[i] = ap_pr.U2;                        // Больше порога — константа U2
-        else
-            Uvix[i] = 6.5 * Uvx[i] - 12.5;              // Промежуточное значение — линейная функция
+		if (Uvx[i] <= ap_pr.Uvx1) Uvix[i] = 5;
+		else Uvix[i] = 0.05*pow(Uvx[i], 2);
     }
 }
 
 // Функция вычисляет продолжительность (в секундах), когда сигнал превышает порог
 float parametr(int n, float dt, float *U) {
-    float Umin = U[0], Umax = U[0];
-    for (int i = 1; i < n; i++) {
-        if (U[i] < Umin) Umin = U[i];
-        if (U[i] > Umax) Umax = U[i];
-    }
 
-    float threshold = Umin + 0.5 * (Umax - Umin);       // Порог = середина диапазона
-    float duration = 0;
-
-    for (int i = 0; i < n; i++) {
-        if (U[i] >= threshold) {
-            duration += dt;                             // Считаем длительность превышения порога
-        }
-    }
-
-    return duration;
+    return 0;
 }
 
 // Вывод таблицы значений t, Uvx, Uvix в три строки
