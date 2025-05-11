@@ -36,13 +36,10 @@ pg1() {
     done <<< "$(./bin/myapp ${inp_data[@]})"   # Вызов внешней программы и обработка её вывода
 
     kill $pig > /dev/null
-#    clear_line
-
+	wait
     check_out="y"
-    if [ "${#t[@]}" -gt "35" ]; then
-        style "\rЖелаете ли вывести таблицу, в ней больше 35 элементов ? (y/n) " $blue n
-        read -rsn1 check_out                   # Чтение ответа пользователя без вывода на экран
-    fi
+    style "\rЖелаете ли вывести таблицу ? (y/n) " $blue n
+    read -rsn1 check_out                   # Чтение ответа пользователя без вывода на экран
 
     if [ "$check_out" == "y" ]; then
         style "\nРезультат программы: " $yellow
