@@ -15,7 +15,7 @@ pg2() {
 
     # Чтение заголовка таблицы
     read -a header <<< "${out_data[0]}"
-    printf "\n  ${yellow}%7s %12s %14s${nc}\n" " ${header[0]}" "${header[1]}" "${header[2]}"
+    printf "\n  %7s %12s %14s\n" " ${header[0]}" "${header[1]}" "${header[2]}"
     printf "%7s %12s %14s\n" "${header[0]}" "${header[1]}" "${header[2]}" > "data/tabls/table_p2.txt"
 
     # Построчная обработка данных таблицы (начиная со второй строки)
@@ -25,7 +25,7 @@ pg2() {
 #        num=$(echo "${arr[2]} * 100" | bc -l)     # Преобразование в проценты
 
         # Печать строки в консоль
-        printf "    ${yellow}%6d${nc} %10.3f %12f%%\n" \
+        printf "    %6d %10.3f %12f%%\n" \
             "${arr[0]}" "${arr[1]}" "${num}"
 
         # Запись строки в файл

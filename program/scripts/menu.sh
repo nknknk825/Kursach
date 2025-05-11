@@ -33,7 +33,7 @@ out_menu() {
             if [ "$indx" != "2" ]; then
                 style "${variant_menu[${indx}]}" $yellow
             elif [[ "$indx" == "2" && "${#t[@]}" -gt "0" ]]; then
-                style "${variant_menu[${indx}]}" $i_yellow
+                style "${variant_menu[${indx}]} <-----" $i_yellow
             fi
         done
         echo

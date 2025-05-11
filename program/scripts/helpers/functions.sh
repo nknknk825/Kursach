@@ -5,7 +5,7 @@ style() {
                 style_text=""
                 local nc=""
         else
-                style_text=$2
+                style_text=""
         fi
 
         if [ -z "$3" ];then

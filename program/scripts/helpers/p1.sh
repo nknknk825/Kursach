@@ -37,14 +37,14 @@ pg1() {
     read -a header <<< "${out_data[0]}"   # Чтение первой строки как заголовок (не используется далее)
 
     # Печать заголовка таблицы в консоль
-    printf "\n	${yellow}%-7s %8s %10s %9s${nc}\n" "   №" "t" "Uvx" "Uvix"
+    printf "\n	%-7s %8s %10s %9s\n" "   №" "t" "Uvx" "Uvix"
 
     # Запись заголовка таблицы в файл
     printf "%-4s %7s %9s %8s\n" "№" "t" "Uvx" "Uvix" > "data/tabls/table_p1.txt"
 
     # Печать и запись каждой строки таблицы
     for i in "${!t[@]}"; do
-        printf "	${yellow}%5d${nc} %9.1f %9.1f %9.1f\n" \
+        printf "	%5d %9.1f %9.1f %9.1f\n" \
             "$((i+1))" "${t[$i]}" "${Uvx[$i]}" "${Uvix[$i]}"
 
         printf "%5d %9.1f %9.1f %9.1f\n" \
