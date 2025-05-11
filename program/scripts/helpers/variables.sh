@@ -9,6 +9,7 @@ green="\033[0;32m"
 yellow="\033[0;33m"
 i_yellow='\033[93m'
 
+
 bold="\033[1m"
 nc="\033[0m"
 alfv="abcdefghijklmnopqrstuvwxyz"

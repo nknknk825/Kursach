@@ -9,12 +9,13 @@ clear    # Очистка экрана
 . ./scripts/helpers/p1.sh --source-only
 . ./scripts/helpers/p2.sh --source-only
 . ./scripts/helpers/file_output.sh --source-only
+. ./scripts/helpers/output_data.sh --source-only
 
 export LC_NUMERIC=C    # Установка десятичного разделителя как точка
 
-N=15000    # Максимальное количество точек
-#sed -i "5s/.*/#define N $N/" src/include/globals.h
-#make >/dev/null
+N=10000    # Максимальное количество точек
+
+
 # Функция вывода заставки
 out_zast(){
     while read -r line; do
@@ -108,16 +109,7 @@ out_menu() {
                 ;;&
 
                 p)
-                	clear
-                	style "Закройте окно для возврата в меню!" $yellow
-	                xterm \
-					 -geometry 80x31-20+5 \
-					 -bg black \
-					 -bd red \
-					 -fg green \
-					 -fa 'Ubuntu Mono' \
-					 -fs 20 \
-					 -e 'tput civis; ./scripts/xterm_scripts/output_data.sh; tput cnorm'
+	                out_info_pr
 
 	            ;;&
 

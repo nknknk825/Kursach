@@ -13,10 +13,6 @@ pg1() {
     n_n=$n
 
     # Чтение вывода программы построчно
-    sleep 1000 &
-    pig=$!
-    echo
-    prgs_t $pig "Работа программы" &
     while read -r line; do
         case $i in
             [0-2])
@@ -35,41 +31,28 @@ pg1() {
         let "i+=1"                             # Увеличение счётчика
     done <<< "$(./bin/myapp ${inp_data[@]})"   # Вызов внешней программы и обработка её вывода
 
-    kill $pig > /dev/null
-	wait
-    check_out="y"
-    style "\rЖелаете ли вывести таблицу ? (y/n) " $blue n
-    read -rsn1 check_out                   # Чтение ответа пользователя без вывода на экран
 
-    if [ "$check_out" == "y" ]; then
-        style "\nРезультат программы: " $yellow
+    style "\nРезультат программы: " $yellow
 
-        read -a header <<< "${out_data[0]}"   # Чтение первой строки как заголовок (не используется далее)
+    read -a header <<< "${out_data[0]}"   # Чтение первой строки как заголовок (не используется далее)
 
-        # Печать заголовка таблицы в консоль
-        printf "\n	${yellow}%-7s %8s %10s %9s${nc}\n" "   №" "t" "Uvx" "Uvix"
+    # Печать заголовка таблицы в консоль
+    printf "\n	${yellow}%-7s %8s %10s %9s${nc}\n" "   №" "t" "Uvx" "Uvix"
 
-        # Запись заголовка таблицы в файл
-        printf "%-4s %7s %9s %8s\n" "№" "t" "Uvx" "Uvix" > "data/tabls/table_p1.txt"
+    # Запись заголовка таблицы в файл
+    printf "%-4s %7s %9s %8s\n" "№" "t" "Uvx" "Uvix" > "data/tabls/table_p1.txt"
 
-        # Печать и запись каждой строки таблицы
-        for i in "${!t[@]}"; do
-            printf "	${yellow}%5d${nc} %9.1f %9.1f %9.1f\n" \
-                "$((i+1))" "${t[$i]}" "${Uvx[$i]}" "${Uvix[$i]}"
-
-            printf "%5d %9.1f %9.1f %9.1f\n" \
-                "$((i+1))" "${t[$i]}" "${Uvx[$i]}" "${Uvix[$i]}" >> "data/tabls/table_p1.txt"
-        done
-
-        style "\n-> enter для окончания просмотра" $yellow n
-        read
-    fi
-
+    # Печать и запись каждой строки таблицы
     for i in "${!t[@]}"; do
-        printf "%4d %8.1f %8.1f %8.1f\n" \
+        printf "	${yellow}%5d${nc} %9.1f %9.1f %9.1f\n" \
+            "$((i+1))" "${t[$i]}" "${Uvx[$i]}" "${Uvix[$i]}"
+
+        printf "%5d %9.1f %9.1f %9.1f\n" \
             "$((i+1))" "${t[$i]}" "${Uvx[$i]}" "${Uvix[$i]}" >> "data/tabls/table_p1.txt"
     done
 
+    style "\n-> enter для окончания просмотра" $yellow n
+    read
     clear    # Очистка экрана
 }
 

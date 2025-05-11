@@ -29,13 +29,12 @@ out_file() {
 	    done
 	} > "${var_file[2]}" &
 
-    prgs_t $! "Запись в файл"
 	clear
 	style "Данные успешно записанны в файл!" $green
+	style "Происходит генерация графиков пожалуйста подождите!" $green
 
     # Запуск Maxima-скрипта для построения графиков
     maxima -b scripts/Wxmax_scr/make_graphs.mac > /dev/null 2>&1 &
-	prgs_t $! "Генерация графиков"
 
     clear
     style "Графики успешно нарисованы!" $yellow
