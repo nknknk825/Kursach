@@ -41,7 +41,7 @@ test1:
 	./bin/myapp 1 20
 
 test2:
-	./bin/myapp 2 30 0.01
+	./bin/myapp 2 10 0.01
 
 # === Очистка всех сборок ===
 clean:

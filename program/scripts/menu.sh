@@ -144,14 +144,6 @@ start() {
 }
 
 start    # Старт программы
-
-style "\nПрограмма успешно завершена" $green
-i=3
-while [ "$i" -gt "0" ];do
-	style "Консоль очистится через: $i" $yellow
-	let "i-=1"
-	sleep 0.3
-done
 clear
 exit    # Завершение
 

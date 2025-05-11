@@ -28,9 +28,11 @@ void form_Uvix(struct AppParams ap_pr, float* Uvx, float* Uvix) {
 }
 
 // Функция вычисляет продолжительность (в секундах), когда сигнал превышает порог
-float parametr(int n, float dt, float *U) {
-
-    return 0;
+float parametr(int n, float max, float *U, float *t) {
+    for (int i = 0; i < n; i++) {
+        max += U[i];
+	}
+    return max / n;
 }
 
 // Вывод таблицы значений t, Uvx, Uvix в три строки
