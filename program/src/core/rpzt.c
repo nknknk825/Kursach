@@ -18,7 +18,7 @@ void approx_value(struct AppParams ap_pr) {
         form_Uvx(ap_pr, t, Uvx);
         form_Uvix(ap_pr, Uvx, Uvix);
 
-        par1 = parametr(ap_pr.n, 0, Uvix, t); // <--- передаем t и Uvix правильно
+        par1 = parametr(ap_pr.n, 0, Uvix, t);
         p = fabs(par - par1) / fabs(par1);
         if (p > 1) p = 1;
 
