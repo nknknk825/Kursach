@@ -11,6 +11,7 @@ out_file() {
         "./data/massiv_Uvix.txt"
     )
 
+	# Заполнение файлов масивами t/Uvx/Uvix
 	{
 	    for i in "${!t[@]}"; do
 	        echo "${t[$i]}"

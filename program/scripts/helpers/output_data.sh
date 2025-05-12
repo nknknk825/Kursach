@@ -9,6 +9,7 @@ out_info_pr() {
 		"./config/explantion_rpzt.txt"
 	)
 	clear
+	# Вывод пояснений к водимым параметрам программы
 	for file_name in "${out_file_name[@]}";do
 		while IFS= read -r line;do
 			echo "$line"
