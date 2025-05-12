@@ -39,7 +39,7 @@ out_file() {
 
     clear
     style "Графики успешно нарисованы!" $yellow
-    style "Вывести открыть графики ? (y/n)" $blue n
+    style "Вывести графики ? (y/n)" $blue n
     read -rsn1 nn
     if [ "$nn" == "y" ]; then
         style "\nЗакройте окно с графиками для продолжения!" $yellow
