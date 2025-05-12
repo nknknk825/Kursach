@@ -23,11 +23,4 @@ variant_menu=(
 )
 
 file_name_zast="./config/zast.txt"
-def_data=(
-    12     # a
-    48     # b
-    10     # tn
-    35     # tk
-    30     # t1
-)
 
