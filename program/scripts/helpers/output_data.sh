@@ -11,12 +11,12 @@ out_info_pr() {
 	clear
 	for file_name in "${out_file_name[@]}";do
 		while IFS= read -r line;do
-			style "$line" $yellow
+			echo "$line"
 		done < "$file_name"
 		if [ "$file_name" != "${out_file_name[-1]}" ];then
-			style "Нажмите enter чтоб перелестнуть страницу!" $blue n
+			echo -ne "Нажмите enter чтоб перелестнуть страницу!"
 		else
-			style "Нажмите enter чтоб закончить просмотр!" $blue n
+			echo -ne "Нажмите enter чтоб закончить просмотр!"
 		fi
 		read
 		clear

@@ -1,21 +1,5 @@
 #!/bash/sh
 
-style() {
-        if [ "$2" == "void" ];then
-                style_text=""
-                local nc=""
-        else
-                style_text=""
-        fi
-
-        if [ -z "$3" ];then
-                echo -e "${style_text}${1}${nc}"
-        else
-                echo -ne "${style_text}${1}${nc}"
-        fi
-}
-
-
 clear_line() {
         echo -ne '\e[A\e[K'
         echo -ne "\007"
@@ -24,7 +8,7 @@ clear_line() {
 is_number() {
         re="$2"
         num=0
-        style "$1" $blue n
+        echo -ne "$1"
 
         while true
         do
@@ -33,7 +17,7 @@ is_number() {
 
                 clear_line
 
-                style "	ОШИБКА: '$num'-не является целым числом" $red
-                style "$1" $blue n
+                echo "	ОШИБКА: '$num'-не является целым числом"
+                echo -ne "$1"
         done
 }

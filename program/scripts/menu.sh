@@ -19,7 +19,7 @@ N=10000    # Максимальное количество точек
 # Функция вывода заставки
 out_zast(){
     while read -r line; do
-        style "$line" $yellow    # Цветной вывод строки
+        echo "$line"    # Цветной вывод строки
     done < $file_name_zast    # Чтение строк из файла
     printf "\n\n"
 }
@@ -28,12 +28,12 @@ out_zast(){
 out_menu() {
     while true; do
 
-        style "Меню программы:" $green
+        echo "Меню программы:"
         for indx in "${!variant_menu[@]}"; do
             if [ "$indx" != "2" ]; then
-                style "${variant_menu[${indx}]}" $yellow
+                echo "${variant_menu[${indx}]}"
             elif [[ "$indx" == "2" && "${#t[@]}" -gt "0" ]]; then
-                style "${variant_menu[${indx}]} <-----" $i_yellow
+                echo "${variant_menu[${indx}]} <-----"
             fi
         done
         echo
@@ -43,33 +43,33 @@ out_menu() {
             if [ "${#t[@]}" -gt "0" ]; then con_vr=3
             else con_vr=2; fi
 
-            style "Выберите действие 1-${con_vr} и p или q для выхода " $blue n
+            echo -n "Выберите действие 1-${con_vr} и p или q для выхода "
             read -rsn1 key    # Чтение одного символа
 			printf "\n"
             case $key in
                 1|2)
                     clear
-                    style "Ведите n точек:" $yellow
-                    style "Диапазон n: [2;${N}]" $yellow
+                    echo "Ведите n точек:"
+                    echo "Диапазон n: [2;${N}]"
                     while true; do
                         is_number "	Ведите n: " '^[0-9]+$'    # Проверка ввода целого числа
                         if [ "$num" -gt "1" ]; then
                             if [ "$num" -le "$N" ]; then break
                             else
                                 clear_line
-                                style "	Error: Число ($num) > $N" $red
+                                echo "	Error: Число ($num) > $N"
                             fi
                         else
                             clear_line
-                            style "	Error: Число ($num) < 2" $red
+                            echo "	Error: Число ($num) < 2"
                         fi
                     done
                     n=$num    # Сохранение введённого значения
                 ;;&
 
                 2)
-                    style "Ведите погрешность eps:" $yellow
-                    style "Диапазон eps: [0.001; 99.99]%" $yellow
+                    echo "Ведите погрешность eps:"
+                    echo "Диапазон eps: [0.001; 99.99]%"
                     while true; do
                         is_number "	Введите eps: " '^[0-9]*\.?[0-9]+$'    # Проверка вещественного числа
 
@@ -82,10 +82,10 @@ out_menu() {
                             break
                         elif [[ "$valid_max" -ne 1 ]]; then
                             clear_line
-                            style "	Ошибка: число ($num) > 99.99" $red
+                            echo "	Ошибка: число ($num) > 99.99"
                         else
                             clear_line
-                            style "	Ошибка: число ($num) < 0.0009" $red
+                            echo "	Ошибка: число ($num) < 0.0009"
                         fi
                     done
                     eps=$num    # Сохранение значения
@@ -93,8 +93,8 @@ out_menu() {
 
                 [1-2])
                     clear
-                    style "Данне успешно переданны в программу!" $green
-                    style "Данные из программы успешно считанны!" $green
+                    echo "Данне успешно переданны в программу!"
+                    echo "Данные из программы успешно считанны!"
                     pg${key} $key    # Вызов функции pg1 или pg2 в зависимости от выбора
                 ;;&
 
@@ -103,7 +103,7 @@ out_menu() {
                     	out_file    # Запись результатов в файл
                     else
 	                    clear_line
-	                    style "Erorr: Не верное значение ($key) не входит в промежуток [1;$con_vr]!" $red
+	                    echo "Erorr: Не верное значение ($key) не входит в промежуток [1;$con_vr]!"
 	                    break
                     fi
                 ;;&
@@ -125,7 +125,7 @@ out_menu() {
 
                 *)
                     clear_line
-                    style "Erorr: Не верное значение ($key) не входит в промежуток [1;$con_vr] и p!" $red
+                    echo "Erorr: Не верное значение ($key) не входит в промежуток [1;$con_vr] и p!"
                 ;;
 
             esac
