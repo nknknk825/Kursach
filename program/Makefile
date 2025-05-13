@@ -33,9 +33,10 @@ build/%.o: src/core/%.c
 
 # === Запуск программы ===
 run:
+	@chmod +x ./scripts/menu.sh
 	@mkdir -p data/graphs
 	@mkdir -p data/tabls
-	./scripts/menu.sh
+	bash ./scripts/menu.sh
 
 test1:
 	./bin/myapp 1 20
