@@ -3,7 +3,7 @@ CC = gcc
 CFLAGS = -Wall -I./src/include
 
 # === Целевой исполняемый файл ===
-TARGET = bin/myapp
+TARGET = bin/prg
 
 # === Исходные и объектные файлы ===
 SRCS = src/main.c src/app.c src/funct.c

@@ -15,15 +15,15 @@ void form_time(struct AppParams ap_pr, float* t) {
 // Формирование массива значений Uvx по заданному закону
 void form_Uvx(struct AppParams ap_pr, float* t, float* Uvx) {
     for (int i = 0; i < ap_pr.n; i++) {
-		Uvx[i] = ap_pr.a0 + ap_pr.a1*t[i] + ap_pr.a2*pow(t[i],2);
+		Uvx[i] = ap_pr.U*pow(M_E, ap_pr.a*sin(t[i]));
     }
 }
 
 // Формирование массива значений Uvix на основе Uvx по кусочной линейной аппроксимации
 void form_Uvix(struct AppParams ap_pr, float* Uvx, float* Uvix) {
     for (int i = 0; i < ap_pr.n; i++) {
-		if (Uvx[i] <= ap_pr.Uvx1) Uvix[i] = 5;
-		else Uvix[i] = 0.05*pow(Uvx[i], 2);
+		if (Uvx[i] <= ap_pr.Uvx1) Uvix[i] = 2*Uvx[i]-5;
+		else Uvix[i] = ap_pr.Uvx1 - 5;
     }
 }
 
