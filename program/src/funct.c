@@ -6,6 +6,9 @@
 
 // Формирование массива времён t по шагу dt
 void form_time(struct AppParams ap_pr, float* t) {
+	ap_pr.tn *= M_PI;
+	ap_pr.tk *= M_PI;
+
     float dt = (ap_pr.tk - ap_pr.tn) / (ap_pr.n - 1);  // Шаг между точками времени
     for (int i = 0; i < ap_pr.n; i++) {
         t[i] = ap_pr.tn + i * dt;                      // t[i] = начальное + шаг * номер
@@ -15,15 +18,14 @@ void form_time(struct AppParams ap_pr, float* t) {
 // Формирование массива значений Uvx по заданному закону
 void form_Uvx(struct AppParams ap_pr, float* t, float* Uvx) {
     for (int i = 0; i < ap_pr.n; i++) {
-		Uvx[i] = ap_pr.U*pow(M_E, ap_pr.a*sin(t[i]));
+		Uvx[i] = ap_pr.U0 - ap_pr.U*sin(t[i]);
     }
 }
 
 // Формирование массива значений Uvix на основе Uvx по кусочной линейной аппроксимации
 void form_Uvix(struct AppParams ap_pr, float* Uvx, float* Uvix) {
     for (int i = 0; i < ap_pr.n; i++) {
-		if (Uvx[i] <= ap_pr.Uvx1) Uvix[i] = 2*Uvx[i]-5;
-		else Uvix[i] = ap_pr.Uvx1 - 5;
+		Uvix[i] = ap_pr.a*Uvx[i];
     }
 }
 
