@@ -165,7 +165,7 @@ out_menu() {
         	cn_vr=2
             case $key in
             	1|2|p)
-            		afplay -q 1 ./scripts/mp3_file/blaster.mp3
+            		afplay -q 1 ./data/mp3_file/blaster.mp3
             	;;
                 1|2)
                     clear
@@ -221,7 +221,7 @@ out_menu() {
                 3)
                 	cn_vr=2
                 	if [ "${#t[@]}" -gt "0" ];then
-                			afplay -q 1 ./scripts/mp3_file/blaster.mp3
+                			afplay -q 1 ./data/mp3_file/blaster.mp3
                     	    clear
 						    echo "Происходит запись в файл!"
 
@@ -307,7 +307,7 @@ start() {
     out_zast    # Отображение заставки
     out_menu    # Запуск главного меню
 }
-(while true; do afplay -q 1 ./scripts/mp3_file/start_wars.mp3; done) &
+(while true; do afplay -q 1 ./scripts/data/start_wars.mp3; done) &
 mp=$!
 
 start    # Старт программы
