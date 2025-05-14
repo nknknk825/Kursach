@@ -16,7 +16,7 @@ pg2() {
     # Чтение заголовка таблицы
     read -a header <<< "${out_data[0]}"
     printf "\n  %7s %12s %14s\n" " ${header[0]}" "${header[1]}" "${header[2]}"
-    printf "%7s %12s %14s\n" "${header[0]}" "${header[1]}" "${header[2]}" > "data/tabls/table_p2.txt"
+    printf "%7s %12s %14s\n" "${header[0]}" "${header[1]}" "${header[2]}" > "data/tabls/table_rpzt.txt"
 
     # Построчная обработка данных таблицы (начиная со второй строки)
     while read -a arr; do
@@ -29,11 +29,11 @@ pg2() {
 
         # Запись строки в файл
         printf "%7d %10.3f %12f%%\n" \
-            "${arr[0]}" "${arr[1]}" "${num}" >> "data/tabls/table_p2.txt"
+            "${arr[0]}" "${arr[1]}" "${num}" >> "data/tabls/table_rpzt.txt"
 
         # Прекращение при достижении половины массива
         if [ "${arr[0]}" -gt "$((N/2))" ]; then
-            echo " Достигнут предел массива (${N} элементов). Остановка"
+            echo " Достигнут предел массива (${N} элементов). Остановка" >> "data/tabls/table_rpzt.txt"
             break
         fi
 

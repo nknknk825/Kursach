@@ -6,7 +6,7 @@ CFLAGS = -Wall -I./src/include
 TARGET = bin/myapp
 
 # === Исходные и объектные файлы ===
-SRCS = src/main/main.c src/core/app.c src/core/funct.c
+SRCS = src/main.c src/app.c src/funct.c
 OBJS = build/main.o build/app.o build/funct.o
 
 # === Цель по умолчанию ===
@@ -20,15 +20,10 @@ $(TARGET): $(OBJS)
 	@echo "✅ Скомпилировано: $(TARGET)"
 
 # === Правило сборки объектных файлов ===
-build/main.o: src/main.c
+build/%.o: src/%.c
 	@mkdir -p build
 	$(CC) $(CFLAGS) -c $< -o $@
-	@echo "📦 main: $<"
-
-build/%.o: src/core/%.c
-	@mkdir -p build
-	$(CC) $(CFLAGS) -c $< -o $@
-	@echo "📦 core: $<"
+	@echo "📦 src: $<"
 
 
 # === Запуск программы ===

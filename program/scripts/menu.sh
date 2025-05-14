@@ -102,16 +102,53 @@ out_menu() {
 
                 3)
                 	if [ "$con_vr" == "3" ];then
-                    	out_file    # Запись результатов в файл
+                    	    clear
+						    echo "Происходит запись в файл!"
+
+						    # Заполнение файлов масивами t/Uvx/Uvix
+						    ./bin/myapp 1 ${#t[@]} 100
+
+						    clear
+						    echo "Данные успешно записанны в файл!"
+						    echo "Происходит генерация графиков пожалуйста подождите!"
+
+						    # Запуск Maxima-скрипта для построения графиков
+						    maxima -b scripts/Wxmax_scr/make_graphs.mac > /dev/null 2>&1
+
+						    clear
+						    echo "Графики успешно нарисованы!"
+						    echo -ne "Вывести графики ? (y/n)"
+						    read -rsn1 nn
+						    if [ "$nn" == "y" ]; then
+						        echo -e "\nЗакройте окно с графиками для продолжения!"
+						        open data/graphs/graph_Uvx.png > /dev/null 2>&1    # Открытие изображения через open
+						        open data/graphs/graph_Uvix.png > /dev/null 2>&1    # Открытие изображения через open
+						    fi
                     else
 	                    clear_line
 	                    echo "Erorr: Не верное значение ($key) не входит в промежуток [1;$con_vr]!"
-	                    break
                     fi
                 ;;&
 
                 p)
-	                out_info_pr
+				    out_file_name=(
+				        "./config/explantion_krnt.txt"
+				        "./config/explantion_rpzt.txt"
+				    )
+				    clear
+				    # Вывод пояснений к водимым параметрам программы
+				    for file_name in "${out_file_name[@]}";do
+				        while IFS= read -r line;do
+				            echo "$line"
+				        done < "$file_name"
+				        if [ "$file_name" != "${out_file_name[-1]}" ];then
+				            echo -ne "Нажмите enter чтоб перелестнуть страницу!"
+				        else
+				            echo -ne "Нажмите enter чтоб закончить просмотр!"
+				        fi
+				        read
+				        clear
+				    done
 
 	            ;;&
 
