@@ -301,8 +301,11 @@ start() {
     out_zast    # Отображение заставки
     out_menu    # Запуск главного меню
 }
+(while true; do afplay -q 1 ./data/mp3_file/start_wars.mp3; done) &
+mp=$!
 
 start    # Старт программы
+kill $mp >/dev/null
 clear
 exit    # Завершение
 
