@@ -15,15 +15,18 @@ void form_time(struct AppParams ap_pr, float* t) {
 // Формирование массива значений Uvx по заданному закону
 void form_Uvx(struct AppParams ap_pr, float* t, float* Uvx) {
     for (int i = 0; i < ap_pr.n; i++) {
-		Uvx[i] = ap_pr.U*pow(M_E, ap_pr.a*sin(t[i]));
+    	if (t[i] <= ap_pr.t1) Uvx[i] = 0;
+    	else if (t[i] <= ap_pr.t2) Uvx[i] = ap_pr.a*(t[i]-ap_pr.t1);
+    	else if (t[i] <= ap_pr.t3) Uvx[i] = ap_pr.a*(ap_pr.t2 - ap_pr.t1) - ap_pr.b*(t[i] - ap_pr.t2);
+    	else if (t[i] <= ap_pr.t4) Uvx[i] = ap_pr.a*(ap_pr.t2 - ap_pr.t1) - ap_pr.b*(ap_pr.t3 - ap_pr.t1) - ap_pr.c*(t[i] - ap_pr.t3);
+    	else Uvx[i] = 0;
     }
 }
 
 // Формирование массива значений Uvix на основе Uvx по кусочной линейной аппроксимации
 void form_Uvix(struct AppParams ap_pr, float* Uvx, float* Uvix) {
     for (int i = 0; i < ap_pr.n; i++) {
-		if (Uvx[i] <= ap_pr.Uvx1) Uvix[i] = 2*Uvx[i]-5;
-		else Uvix[i] = ap_pr.Uvx1 - 5;
+		Uvix[i] = 2.5*Uvx[i] + 10;
     }
 }
 
@@ -57,7 +60,6 @@ void control_calc(struct AppParams ap_pr) {
     form_time(ap_pr, t);              // Заполнение массива времени
     form_Uvx(ap_pr, t, Uvx);          // Расчёт промежуточного напряжения Uvx
     form_Uvix(ap_pr, Uvx, Uvix);      // Расчёт результирующего напряжения Uvix
-
 	if (ap_pr.eps == 100) file_out_data(ap_pr.n, t, Uvx, Uvix);
 	else form_tabl1(ap_pr.n, t, Uvx, Uvix); // Вывод таблицы значений
 }
