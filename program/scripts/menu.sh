@@ -28,15 +28,17 @@ out_zast(){
 out_menu() {
     while true; do
 
-        echo "Меню программы:"
+        printf "%.0s*" $(seq 1 54)
+        echo -e "\n*  Меню программы:                                   *"
         for indx in "${!variant_menu[@]}"; do
             if [ "$indx" != "2" ]; then
-                echo "${variant_menu[${indx}]}"
+                echo "*    ${variant_menu[${indx}]}  *"
             elif [[ "$indx" == "2" && "${#t[@]}" -gt "0" ]]; then
-                echo "${variant_menu[${indx}]} <-----"
+                echo "*    ${variant_menu[${indx}]}  *"
             fi
         done
-        echo
+        printf "%.0s*" $(seq 1 54)
+        echo -e "\n"
         while true; do
 
             # Определение доступных пунктов меню
