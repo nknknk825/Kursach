@@ -6,24 +6,33 @@
 
 // Формирование массива времён t по шагу dt
 void form_time(struct AppParams ap_pr, float* t) {
-    float dt = (ap_pr.tk - ap_pr.tn) / (ap_pr.n - 1);  // Шаг между точками времени
+	float tn = 0;
+	float tk = ap_pr.T;
+//	printf("|%f|", tk);
+
+    float dt = (tk - tn) / (ap_pr.n - 1);  // Шаг между точками времени
     for (int i = 0; i < ap_pr.n; i++) {
-        t[i] = ap_pr.tn + i * dt;                      // t[i] = начальное + шаг * номер
+        t[i] = tn + i * dt;                      // t[i] = начальное + шаг * номер
     }
 }
 
 // Формирование массива значений Uvx по заданному закону
 void form_Uvx(struct AppParams ap_pr, float* t, float* Uvx) {
     for (int i = 0; i < ap_pr.n; i++) {
-		Uvx[i] = ap_pr.U*pow(M_E, ap_pr.a*sin(t[i]));
+    	if (0 <= t[i] && t[i] <= ap_pr.T/2) Uvx[i] = ap_pr.U;
+    	else if (t[i] < ap_pr.T) Uvx[i] = 0;
     }
 }
 
 // Формирование массива значений Uvix на основе Uvx по кусочной линейной аппроксимации
 void form_Uvix(struct AppParams ap_pr, float* Uvx, float* Uvix) {
     for (int i = 0; i < ap_pr.n; i++) {
-		if (Uvx[i] <= ap_pr.Uvx1) Uvix[i] = 2*Uvx[i]-5;
-		else Uvix[i] = ap_pr.Uvx1 - 5;
+        if (Uvx[i] <= ap_pr.Uvx1)
+            Uvix[i] = ap_pr.U1;                        // Меньше порога — константа U1
+        else if (Uvx[i] >= ap_pr.Uvx2)
+            Uvix[i] = ap_pr.U2;                        // Больше порога — константа U2
+        else
+            Uvix[i] = 6.5 * Uvx[i] - 12.5;              // Промежуточное значение — линейная функция
     }
 }
 

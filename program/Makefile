@@ -34,10 +34,10 @@ run:
 	bash ./scripts/menu.sh
 
 test1:
-	./bin/myapp 1 20
+	./bin/prg 1 100 0
 
 test2:
-	./bin/myapp 2 10 0.01
+	./bin/prg 2 10 0.01
 
 # === Очистка всех сборок ===
 clean:
