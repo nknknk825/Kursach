@@ -12,23 +12,7 @@ out_file() {
     )
 
 	# Заполнение файлов масивами t/Uvx/Uvix
-	{
-	    for i in "${!t[@]}"; do
-	        echo "${t[$i]}"
-	    done
-	} > "${var_file[0]}" &
-
-	{
-	    for i in "${!Uvx[@]}"; do
-	        echo "${Uvx[$i]}"
-	    done
-	} > "${var_file[1]}" &
-
-	{
-	    for i in "${!Uvix[@]}"; do
-	        echo "${Uvix[$i]}"
-	    done
-	} > "${var_file[2]}" &
+    ./bin/myapp 1 ${#t[@]} 100
 
 	clear
 	echo "Данные успешно записанны в файл!"
@@ -40,7 +24,7 @@ out_file() {
     wait
     clear
     echo "Графики успешно нарисованы!"
-    echo -ne "Вывести открыть графики ? (y/n)"
+    echo -ne "Вывести графики ? (y/n)"
     read -rsn1 nn
     if [ "$nn" == "y" ]; then
         echo -e "\nЗакройте окно с графиками для продолжения!"
