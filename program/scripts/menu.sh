@@ -164,6 +164,9 @@ out_menu() {
 			printf "\n"
         	cn_vr=2
             case $key in
+            	1|2|p)
+            		afplay -q 1 ./scripts/mp3_file/blaster.mp3
+            	;;
                 1|2)
                     clear
                     echo "Ведите n точек:"
@@ -218,6 +221,7 @@ out_menu() {
                 3)
                 	cn_vr=2
                 	if [ "${#t[@]}" -gt "0" ];then
+                			afplay -q 1 ./scripts/mp3_file/blaster.mp3
                     	    clear
 						    echo "Происходит запись в файл!"
 
@@ -243,6 +247,7 @@ out_menu() {
 						    cn_vr=3
                     else
 	                    clear_line
+	                    say -v Zarvox "массивы t/Uvx/Uvix пусты"
 	                    echo "Erorr: массивы t/Uvx/Uvix пусты!"
                     fi
                 ;;&
@@ -284,6 +289,7 @@ out_menu() {
 
                 *)
                     clear_line
+                    say -v Zarvox "Не верное значение ($key) не входит в промежуток [1;$cn_vr] и p!"
                     echo "Erorr: Не верное значение ($key) не входит в промежуток [1;$cn_vr] и p!"
                 ;;
 
