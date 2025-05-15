@@ -238,8 +238,7 @@ while true; do
 					    read -rsn1 nn
 					    if [ "$nn" == "y" ]; then
 					        echo -e "\nЗакройте окно с графиками для продолжения!"
-					        open data/graphs/graph_Uvx.png > /dev/null 2>&1    # Открытие изображения через open
-					        open data/graphs/graph_Uvix.png > /dev/null 2>&1    # Открытие изображения через open
+					        eog data/graphs/graph_Uvx.png > /dev/null 2>&1    # Открытие изображения через eog
 					    fi
 					    cn_vr=3
                 else
