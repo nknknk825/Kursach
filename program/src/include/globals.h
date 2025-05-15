@@ -15,6 +15,8 @@ struct AppParams {
     float tn, t1, t2, t3, t4, tk;   // Начальное, конечное время и момент излома
 
     float Uvx1, Uvx2;   // Пороговые значения для функции Uvix
+
+    float t[N], Uvx[N], Uvix[N];
 };
 
 #endif

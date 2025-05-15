@@ -55,13 +55,12 @@ void form_tabl1(int n, float* t, float* Uvx, float* Uvix) {
 }
 
 void control_calc(struct AppParams ap_pr) {
-    float t[N], Uvx[N], Uvix[N];       // Массивы для времён, промежуточного и результирующего напряжения
 
-    form_time(ap_pr, t);              // Заполнение массива времени
-    form_Uvx(ap_pr, t, Uvx);          // Расчёт промежуточного напряжения Uvx
-    form_Uvix(ap_pr, Uvx, Uvix);      // Расчёт результирующего напряжения Uvix
-	if (ap_pr.eps == 100) file_out_data(ap_pr.n, t, Uvx, Uvix);
-	else form_tabl1(ap_pr.n, t, Uvx, Uvix); // Вывод таблицы значений
+    form_time(ap_pr, ap_pr.t);              // Заполнение массива времени
+    form_Uvx(ap_pr, ap_pr.t, ap_pr.Uvx);          // Расчёт промежуточного напряжения Uvx
+    form_Uvix(ap_pr, ap_pr.Uvx, ap_pr.Uvix);      // Расчёт результирующего напряжения Uvix
+
+	form_tabl1(ap_pr.n, ap_pr.t, ap_pr.Uvx, ap_pr.Uvix); // Вывод таблицы значений
 }
 
 void file_out_data(int n, float* t, float* Uvx, float* Uvix) {
@@ -72,9 +71,9 @@ void file_out_data(int n, float* t, float* Uvx, float* Uvix) {
      f3=fopen("./data/massiv_Uvix.txt", "w");
      for (int i = 0;i < n;i++)
      {
-        fprintf(f1,"\n %6.3f",t[i]);
-        fprintf(f2,"\n %6.3f", Uvx[i]);         //Запись данных в файл
-        fprintf(f3,"\n%6.3f",Uvix[i]);
+        fprintf(f1,"\n %g",t[i]);
+        fprintf(f2,"\n %g", Uvx[i]);         //Запись данных в файл
+        fprintf(f3,"\n%g",Uvix[i]);
       }
       fclose(f1);
       fclose(f2);                                       //Закрытие файлов
@@ -83,7 +82,6 @@ void file_out_data(int n, float* t, float* Uvx, float* Uvix) {
 
 // Функция приближённого расчёта значения параметра с заданной точностью
 void approx_value(struct AppParams ap_pr) {
-    float t[N], Uvx[N], Uvix[N];
     float p = 1;
     float par = 1e10;
     float par1 = 0;
@@ -91,11 +89,11 @@ void approx_value(struct AppParams ap_pr) {
     printf("n   parametr   pogrechnost\n");
 
     while (p > ap_pr.eps && ap_pr.n < N) {
-        form_time(ap_pr, t);
-        form_Uvx(ap_pr, t, Uvx);
-        form_Uvix(ap_pr, Uvx, Uvix);
+        form_time(ap_pr, ap_pr.t);
+        form_Uvx(ap_pr, ap_pr.t, ap_pr.Uvx);
+        form_Uvix(ap_pr, ap_pr.Uvx, ap_pr.Uvix);
 
-        par1 = parametr(ap_pr.n, 0, Uvix, t);
+        par1 = parametr(ap_pr.n, 0, ap_pr.Uvix, ap_pr.t);
         p = fabs(par - par1) / fabs(par1);
         if (p > 1) p = 1;
 
