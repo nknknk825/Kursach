@@ -33,11 +33,6 @@ run:
 	@mkdir -p data/tabls
 	bash ./scripts/menu.sh
 
-test1:
-	./bin/prg 1 100 0
-
-test2:
-	./bin/prg 2 10 0.01
 
 # === Очистка всех сборок ===
 clean:
