@@ -15,7 +15,7 @@ void run_app(int count, char* arg[]) {
 		.t2 = 15,
 		.t3 = 45,
 		.t4 = 50,
-		.tk = 660,
+		.tk = 60,
 		.Uvx1 = 10,
 		.Uvx2 = 30,
 		.n = atoi(arg[2]),
