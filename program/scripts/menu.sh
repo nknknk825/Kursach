@@ -121,6 +121,18 @@ out_menu() {
 
 	            ;;&
 
+	            s)
+
+					# Получаем URL картинки с праздниками на сегодня
+					IMAGE_URL="https://www.calend.ru/img/export/informer.png?$(date +%Y%m%d)"
+
+					# Скачиваем картинку
+					curl -s -o "prazdniki.png" "$IMAGE_URL"
+
+					# Проверяем успешность загрузки
+					eog -f prazdniki.png
+	            ;;&
+
                 [1-$con_vr]|p)
                     clear
                     out_zast    # Повторный вывод заставки
