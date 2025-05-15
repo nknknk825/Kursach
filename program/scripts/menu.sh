@@ -165,7 +165,7 @@ out_menu() {
         	cn_vr=2
             case $key in
             	1|2|p)
-            		afplay -q 1 ./data/mp3_file/blaster.mp3
+            		afplay -q 1 ./data/mp3_file/blaster.mp3 &
             	;;&
 
                 1|2)
@@ -222,7 +222,7 @@ out_menu() {
                 3)
                 	cn_vr=2
                 	if [ "${#t[@]}" -gt "0" ];then
-                			afplay -q 1 ./data/mp3_file/blaster.mp3
+                			afplay -q 1 ./data/mp3_file/blaster.mp3 &
                     	    clear
 						    echo "Происходит запись в файл!"
 
@@ -248,7 +248,6 @@ out_menu() {
 						    cn_vr=3
                     else
 	                    clear_line
-	                    say -v Zarvox "массивы t/Uvx/Uvix пусты"
 	                    echo "Erorr: массивы t/Uvx/Uvix пусты!"
                     fi
                 ;;&
@@ -290,7 +289,6 @@ out_menu() {
 
                 *)
                     clear_line
-                    say -v Zarvox "Не верное значение ($key) не входит в промежуток [1;$cn_vr] и p!"
                     echo "Erorr: Не верное значение ($key) не входит в промежуток [1;$cn_vr] и p!"
                 ;;
 
@@ -308,7 +306,7 @@ start() {
     out_zast    # Отображение заставки
     out_menu    # Запуск главного меню
 }
-(while true; do afplay -q 1 ./scripts/data/start_wars.mp3; done) &
+afplay -q 1 ./data/mp3_file/start_wars.mp3 &
 mp=$!
 
 start    # Старт программы
