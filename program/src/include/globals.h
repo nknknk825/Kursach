@@ -16,7 +16,7 @@ struct AppParams {
 
     float Uvx1, Uvx2;   // Пороговые значения для функции Uvix
 
-    float t[N], Uvx[N], Uvix[N];
+    float t[N], Uvx[N], Uvix[N]; // Массивы
 };
 
 #endif
