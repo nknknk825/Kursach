@@ -164,7 +164,7 @@ while true; do
     while true; do
 
 
-        echo -n "Выберите действие 1-3 и p или q для выхода "
+        echo -n "Выберите действие 1-3 или q для выхода "
         read -rsn1 key    # Чтение одного символа
 		printf "\n"
     	cn_vr=2
@@ -293,7 +293,7 @@ while true; do
 
             *)
                 clear_line
-                echo "Erorr: Не верное значение ($key) не входит в промежуток [1;$cn_vr] и p!"
+                echo "Erorr: Не верное значение ($key) не входит в промежуток [1;$cn_vr]!"
             ;;
 
         esac
