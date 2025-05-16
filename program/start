@@ -2,7 +2,6 @@
 
 list_apt=(
     "wxmaxima"
-    "eog"
 )
 
 for elm in "${list_apt[@]}";do
