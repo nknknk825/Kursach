@@ -196,20 +196,20 @@ while true; do
 
 				if [ "$key" == "2" ];then
                     echo "Ведите погрешность eps(допустимая погрешность):"
-                    echo "Диапазон eps: [0.001; 99.99]%"
+                    echo "Диапазон eps: [0.001; 20]%"
                     while true; do
                         is_number "	Введите eps: " '^[0-9]*\.?[0-9]+$'    # Проверка вещественного числа
 
                         # Проверка: num > 0.0009
                         valid_min=$(echo "$num > 0.0009" | bc -l)
                         # Проверка: num < 99.99
-                        valid_max=$(echo "$num < 99.99" | bc -l)
+                        valid_max=$(echo "$num < 20" | bc -l)
 
                         if [[ "$valid_min" -eq 1 && "$valid_max" -eq 1 ]]; then
                             break
                         elif [[ "$valid_max" -ne 1 ]]; then
                             clear_line
-                            echo "	Ошибка: число ($num) > 99.99"
+                            echo "	Ошибка: число ($num) > 20"
                         else
                             clear_line
                             echo "	Ошибка: число ($num) < 0.0009"
