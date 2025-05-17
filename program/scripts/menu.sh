@@ -225,52 +225,31 @@ while true; do
             ;;&
 
             3)
-            	cn_vr=2
-            	if [ "${#t[@]}" -gt "0" ];then
-                	    clear
-					    echo "Происходит запись в файл!"
+                cn_vr=2
+                if [ "${#t[@]}" -gt "0" ];then
+                    clear
+                    echo "Происходит запись в файл!"
 
-					    var_file=(                  # Массив с путями к выходным файлам
-					        "./data/massiv_t.txt"
-					        "./data/massiv_Uvx.txt"
-					        "./data/massiv_Uvix.txt"
-					    )
+                    # Заполнение файлов масивами t/Uvx/Uvix
+                    inp_dt=("3" "${#t[@]}" "${t[@]}" "${Uvx[@]}" "${Uvix[@]}")
+                    ./bin/prg "${inp_dt[@]}"
 
-					    {
-					        for i in "${!t[@]}"; do
-					            echo "${t[$i]}"
-					        done
-					    } > "${var_file[0]}" & # фоновая запись в massiv_t.txt
+                    clear
+                    echo "Данные успешно записанны в файл!"
+                    echo "Происходит генерация графиков пожалуйста подождите!"
 
-					    {
-					        for i in "${!Uvx[@]}"; do
-					            echo "${Uvx[$i]}"
-					        done
-					    } > "${var_file[1]}" & # фоновая запись в massiv_Uvx.txt
+                    # Запуск Maxima-скрипта для построения графиков
+                    maxima -b scripts/Wxmax_scr/make_graphs.mac > /dev/null 2>&1
 
-					    {
-					        for i in "${!Uvix[@]}"; do
-					            echo "${Uvix[$i]}"
-					        done
-					    } > "${var_file[2]}" & # фоновая запись в massiv_Uvix.txt
-
-					    clear
-					    echo "Данные успешно записанны в файл!"
-					    echo "Происходит генерация графиков пожалуйста подождите!"
-
-					    # Запуск Maxima-скрипта для построения графиков
-					    maxima -b scripts/Wxmax_scr/make_graphs.mac > /dev/null 2>&1
-
-					    clear
-					    echo "Графики успешно нарисованы!"
-					    echo -ne "Вывести графики ? (y/n)"
-					    read -rsn1 nn
-					    if [ "$nn" == "y" ]; then
-					        echo -e "\nЗакройте окно с графиками для продолжения!"
-					        open data/graphs/graph_Uvx.png > /dev/null 2>&1    # Открытие изображения через open
-					        open data/graphs/graph_Uvix.png > /dev/null 2>&1    # Открытие изображения через open
-					    fi
-					    cn_vr=3
+                    clear
+                    echo "Графики успешно нарисованы!"
+                    echo -ne "Вывести графики ? (y/n)"
+                    read -rsn1 nn
+                    if [ "$nn" == "y" ]; then
+                        echo -e "\nЗакройте окно с графиками для продолжения!"
+                        eog data/graphs/graph_Uvx.png > /dev/null 2>&1    # Открытие изображения через eog
+                    fi
+                    cn_vr=3
                 else
                     clear_line
                     echo "Erorr: массивы t/Uvx/Uvix пусты!"

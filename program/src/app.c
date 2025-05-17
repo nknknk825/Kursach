@@ -28,5 +28,20 @@ void run_app(int count, char* arg[]) {
             ap_pr.eps /= 100;   // Перевод из процентов в дробное значение
             approx_value(ap_pr);
             break;
+
+        case 3:
+            float* arr;
+            int line = 0;
+            int str_inx = 3;
+
+            for (int i = str_inx; i < count;i++) {
+                if (i == str_inx) arr = ap_pr.t;
+                else if (i == (ap_pr.n+str_inx)) { arr = ap_pr.Uvx; line = 1;}
+                else if (i == (ap_pr.n*2+str_inx)) { arr = ap_pr.Uvix; line = 2;}
+
+                arr[(i-str_inx)-line*ap_pr.n] = atof(arg[i]);
+            }
+            file_out_data(ap_pr.n, ap_pr.t, ap_pr.Uvx, ap_pr.Uvix);
+        break;
     }
 }
