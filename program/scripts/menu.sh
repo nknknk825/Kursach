@@ -127,13 +127,13 @@ out_menu() {
 					IMAGE_URL="https://www.calend.ru/img/export/informer.png?$(date +%Y%m%d)"
 
 					# Скачиваем картинку
-					curl -s -o "prazdniki.png" "$IMAGE_URL"
+					curl -s -o "./data/prazdniki.png" "$IMAGE_URL"
 
 					# Проверяем успешность загрузки
-					eog -f prazdniki.png
+					eog -f "./data/prazdniki.png" >/dev/null 2>&1
 	            ;;&
 
-                [1-$con_vr]|p)
+                [1-$con_vr]|p|s)
                     clear
                     out_zast    # Повторный вывод заставки
                     break

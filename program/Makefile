@@ -45,7 +45,7 @@ test2:
 
 # === Очистка всех сборок ===
 clean:
-	rm -rf build/*.o $(TARGET)
+	rm -rf build/*.o bin/*
 	@echo "🧹 Очистка завершена."
 
 .PHONY: all clean run lss test1 test2
