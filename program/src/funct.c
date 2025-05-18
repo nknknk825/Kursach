@@ -6,6 +6,9 @@
 
 // Формирование массива времён t по шагу dt
 void form_time(struct AppParams ap_pr, float* t) {
+	ap_pr.tn *= M_PI;
+	ap_pr.tk *= M_PI;
+
     float dt = (ap_pr.tk - ap_pr.tn) / (ap_pr.n - 1);  // Шаг между точками времени
     for (int i = 0; i < ap_pr.n; i++) {
         t[i] = ap_pr.tn + i * dt;                      // t[i] = начальное + шаг * номер
@@ -15,16 +18,15 @@ void form_time(struct AppParams ap_pr, float* t) {
 // Формирование массива значений Uvx по заданному закону
 void form_Uvx(struct AppParams ap_pr, float* t, float* Uvx) {
     for (int i = 0; i < ap_pr.n; i++) {
-		if (t[i] <= ap_pr.t1) Uvx[i] = ap_pr.a*(t[i] - ap_pr.tn);
-		else if (t[i] <= ap_pr.t2) Uvx[i] = ap_pr.a*(ap_pr.t1 - ap_pr.tn);
-		else Uvx[i] = ap_pr.a*(ap_pr.t1 - ap_pr.tn) - ap_pr.b*(t[i] - ap_pr.t2);
+		Uvx[i] = ap_pr.U*pow(M_E, (-1*ap_pr.a * t[i]))*sin(t[i]);
     }
 }
 
 // Формирование массива значений Uvix на основе Uvx по кусочной линейной аппроксимации
 void form_Uvix(struct AppParams ap_pr, float* Uvx, float* Uvix) {
+	float a = 2.5, b = 10;
     for (int i = 0; i < ap_pr.n; i++) {
-		Uvix[i] = ap_pr.a*Uvx[i];
+		Uvix[i] = a*Uvx[i] + b;
     }
 }
 
@@ -40,14 +42,14 @@ float parametr(int n, float sum, float *U, float *t) {
 void form_tabl1(int n, float* t, float* Uvx, float* Uvix) {
     for (int i = 0; i < n * 3; i++) {
         if (i < n) {
-            if (i < (n - 1)) printf("%.3g ", t[i]);
-            else printf("%.3g\n", t[i]);
+            if (i < (n - 1)) printf("%g ", t[i]);
+            else printf("%g\n", t[i]);
         } else if (i < n * 2) {
-            if (i < (n * 2 - 1)) printf("%.3g ", Uvx[i - n]);
-            else printf("%.3g\n", Uvx[i - n]);
+            if (i < (n * 2 - 1)) printf("%g ", Uvx[i - n]);
+            else printf("%g\n", Uvx[i - n]);
         } else {
-            if (i < (n * 3 - 1)) printf("%.3g ", Uvix[i - n * 2]);
-            else printf("%.3g\n", Uvix[i - n * 2]);
+            if (i < (n * 3 - 1)) printf("%g ", Uvix[i - n * 2]);
+            else printf("%g\n", Uvix[i - n * 2]);
         }
     }
 }
