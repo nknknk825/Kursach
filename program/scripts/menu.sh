@@ -144,6 +144,7 @@ variant_menu=(
         "1) Контрольный расчет для n точек            "
         "2) Расчёт параметра с заданной точностью     "
         "3) Запись данных в файлы                     "
+        "4) Вывести графики"
         "p) Вывод пояснений к параметрам              "
         "0) Выход из программы                        "
 )
@@ -160,10 +161,10 @@ while true; do
     while true; do
 
 
-        echo -n "Выберите действие 1-3 и p (или 0 для выхода) "
+        echo -n "Выберите действие 1-4 и p (или 0 для выхода) "
         read -rsn1 key    # Чтение одного символа
 		printf "\n"
-    	cn_vr=2
+    	cn_vr=4
         case $key in
             1|2)
                 clear
@@ -217,7 +218,7 @@ while true; do
             ;;&
 
             3)
-            	cn_vr=2
+            	cn_vr=4
             	if [ "${#t[@]}" -gt "0" ];then
                 	    clear
 					    echo "Происходит запись в файл!"
@@ -239,14 +240,25 @@ while true; do
 					    read -rsn1 nn
 					    if [ "$nn" == "y" ]; then
 					        echo -e "\nЗакройте окно с графиками для продолжения!"
-					        eog data/graphs/graph_Uvx.png > /dev/null 2>&1    # Открытие изображения через eog
+					        open data/graphs/graph_Uvx.png > /dev/null 2>&1    # Открытие изображения через open
+			                open data/graphs/graph_Uvix.png > /dev/null 2>&1    # Открытие изображения через open
 					    fi
-					    cn_vr=3
+					    cn_vr=4
                 else
                     clear_line
                     echo "Erorr: массивы t/Uvx/Uvix пусты!"
                 fi
             ;;&
+
+		    4)
+                echo -e "\nЗакройте окно с графиками для продолжения!"
+                if [ -f "data/graphs/graph_Uvx.png" ];then
+	                open data/graphs/graph_Uvx.png > /dev/null 2>&1    # Открытие изображения через open
+	                open data/graphs/graph_Uvix.png > /dev/null 2>&1    # Открытие изображения через open
+                else
+                	echo "Графики ещё не сгенерированы!"
+                fi
+            ;;
 
             p)
 			    out_file_name=(
