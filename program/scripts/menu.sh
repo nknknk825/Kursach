@@ -103,7 +103,6 @@ out_menu() {
                     else
 	                    clear_line
 	                    style "Erorr: Не верное значение ($key) не входит в промежуток [1;$con_vr]!" $red
-	                    break
                     fi
                 ;;&
 
@@ -130,7 +129,10 @@ out_menu() {
 					curl -s -o "./data/prazdniki.png" "$IMAGE_URL"
 
 					# Проверяем успешность загрузки
-					eog -f "./data/prazdniki.png" >/dev/null 2>&1
+					eog -f "./data/prazdniki.png" >/dev/null 2>&1 &
+					clear
+					style "Закройте картинку для продолжения!" $yellow
+					wait
 	            ;;&
 
                 [1-$con_vr]|p|s)
@@ -138,6 +140,9 @@ out_menu() {
                     out_zast    # Повторный вывод заставки
                     break
                 ;;
+
+                3)
+				;;
 
                 q)
                     return    # Завершение работы
