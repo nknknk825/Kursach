@@ -66,9 +66,9 @@ void file_out_data(int n, float* t, float* Uvx, float* Uvix) {
      f3=fopen("./data/massiv_Uvix.txt", "w");
      for (int i = 0;i < n;i++)
      {
-        fprintf(f1,"\n %6.3f",t[i]);
-        fprintf(f2,"\n %6.3f", Uvx[i]);         //Запись данных в файл
-        fprintf(f3,"\n%6.3f",Uvix[i]);
+        fprintf(f1,"\n%g",t[i]);
+        fprintf(f2,"\n%g", Uvx[i]);         //Запись данных в файл
+        fprintf(f3,"\n%g",Uvix[i]);
       }
       fclose(f1);
       fclose(f2);                                       //Закрытие файлов
