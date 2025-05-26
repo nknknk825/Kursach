@@ -80,10 +80,10 @@ pg1() {
 
     # Печать и запись каждой строки таблицы
     for i in "${!t[@]}"; do
-        printf "        %5d %9.1f %9.1f %9.1f\n" \
+        printf "        %5d %9.4f %9.4f %9.4g\n" \
             "$((i+1))" "${t[$i]}" "${Uvx[$i]}" "${Uvix[$i]}"
 
-        printf "%5d %9.1f %9.1f %9.1f\n" \
+        printf "%5d %9.3f %9.3f %g\n" \
             "$((i+1))" "${t[$i]}" "${Uvx[$i]}" "${Uvix[$i]}" >> "data/tabls/table_krnt.txt"
     done
 
