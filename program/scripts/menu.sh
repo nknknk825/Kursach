@@ -9,6 +9,7 @@ variant_menu=(
         "1 - Контрольный расчет для n точек            "
         "2 - Расчёт параметра с заданной точностью     "
         "3 - Запись данных в файлы                     "
+        "g - Вывести графики						   "
         "q - Выход из программы                        "
 )
 
@@ -31,7 +32,7 @@ is_number() {
 
                 clear_line
 
-                echo "  ОШИБКА: '$num'-не является целым числом"
+                echo "	ОШИБКА: '$num'-не является целым числом"
                 echo -ne "$1"
         done
 }
@@ -73,13 +74,16 @@ pg1() {
     read -a header <<< "${out_data[0]}"   # Чтение первой строки как заголовок (не используется далее)
 
     # Печать заголовка таблицы в консоль
-    printf "\n	%s %8s %10s %9s\n" "   №" "t" "Uvx" "Uvix"
-
+    echo -n "	"; printf "%.0s-" $(seq 1 38); echo
+    printf "	%s  %-6s %-2s %-5s %s %-5s %s %-9s %s\n" "|" "№" "|" "t" "|" "Uvx" "|" "Uvix" "|"
+    echo -n "	"; printf "%.0s-" $(seq 1 38); echo
     # Печать и запись каждой строки таблицы
     for i in "${!t[@]}"; do
-        printf "        %-5d %-9.2f %-10.2f %-20.2f\n" \
-            "$((i+1))" "${t[$i]}" "${Uvx[$i]}" "${Uvix[$i]}"
+        printf "	|  %-4g %s %-6g %s %-5g %s %-9g %s\n" \
+            "$((i+1))" "|" "${t[$i]}" "|" "${Uvx[$i]}" "|" "${Uvix[$i]}" "|"
     done
+    echo -n "	"
+    printf "%.0s-" $(seq 1 38)
 
     echo -ne "\n-> enter для окончания просмотра"
     read
@@ -101,7 +105,7 @@ pg2() {
 
     # Чтение заголовка таблицы
     read -a header <<< "${out_data[0]}"
-    printf "\n  %7s %12s %14s\n" " ${header[0]}" "${header[1]}" "${header[2]}"
+    printf "\n	%-8s %-12s %-8s\n" " ${header[0]}" "${header[1]}" "${header[2]}"
     printf "%7s %12s %14s\n" "${header[0]}" "${header[1]}" "${header[2]}" > "data/tabls/table_rpzt.txt"
 
     # Построчная обработка данных таблицы (начиная со второй строки)
@@ -110,15 +114,16 @@ pg2() {
         num=$(awk "BEGIN { print ${arr[2]} * 100 }")  # Преобразование в проценты
 
         # Печать строки в консоль
-        printf "    %6d %10.3f %12f%%\n" \
+        printf "	%-8d %-12g %-8g%%\n" \
             "${arr[0]}" "${arr[1]}" "${num}"
 
         # Запись строки в файл
-        printf "%7d %10.3f %12f%%\n" \
+        printf "%7d %10g %12g%%\n" \
             "${arr[0]}" "${arr[1]}" "${num}" >> "data/tabls/table_rpzt.txt"
 
         # Прекращение при достижении половины массива
         if [ "${arr[0]}" -gt "$((N/2))" ]; then
+        	echo " Достигнут предел массива (${N} элементов). Остановка"
             echo " Достигнут предел массива (${N} элементов). Остановка" >> "data/tabls/table_rpzt.txt"
             break
         fi
@@ -232,8 +237,7 @@ while true; do
                     echo "Данные успешно записанны в файл!"
                     echo "Происходит генерация графиков пожалуйста подождите!"
 
-                    # Запуск Maxima-скрипта для построения графиков
-                    maxima -b scripts/Wxmax_scr/make_graphs.mac > /dev/null 2>&1
+                    maxima -b scripts/Wxmax_scr/make_graphs.mac > /dev/null 2>&1 # Запуск скрипта maxima
 
                     clear
                     echo "Графики успешно нарисованы!"
@@ -241,7 +245,8 @@ while true; do
                     read -rsn1 nn
                     if [ "$nn" == "y" ]; then
                         echo -e "\nЗакройте окно с графиками для продолжения!"
-                        eog data/graphs/graph_Uvx.png > /dev/null 2>&1    # Открытие изображения через eog
+                        open data/graphs/graph_Uvx.png > /dev/null 2>&1    # Открытие изображения через open
+                        open data/graphs/graph_Uvix.png > /dev/null 2>&1    # Открытие изображения через open
                     fi
                     cn_vr=3
                 else
@@ -250,8 +255,19 @@ while true; do
                 fi
             ;;&
 
+			g)
+				if [ -f "data/graphs/graph_Uvx.png" ];then
+					clear
+	                echo -e "Закройте окно с графиками для продолжения!"
+	                open data/graphs/graph_Uvx.png > /dev/null 2>&1    # Открытие изображения через open
+	                open data/graphs/graph_Uvix.png > /dev/null 2>&1    # Открытие изображения через open
+                else
+                	echo "Графики ещё не созданы, сделайте контрольный расчет и сохраните данные в файл для генерации их"
+                	read -p "-> enter для возврата в главное меню"
+                fi
+			;;&
 
-            [1-$cn_vr])
+            [1-$cn_vr]|g)
                 clear
                 out_zast    # Повторный вывод заставки
                 break

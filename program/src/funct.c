@@ -29,11 +29,24 @@ void form_Uvix(struct AppParams ap_pr, float* Uvx, long double* Uvix) {
 }
 
 // Функция вычисляет продолжительность (в секундах), когда сигнал превышает порог
-float parametr(int n, float sum, long double *U, float *t) {
+float parametr(int n, float sum, long double *Uvix, float *t) {
+    double sum_lnU = 0.0, sum_t = 0.0, sum_t2 = 0.0, sum_tlnU = 0.0;
+
+    // 1. Линеаризация: ln(Uvix) = ln(a) + b*t
     for (int i = 0; i < n; i++) {
-        sum += U[i];
-	}
-    return sum / n;
+        if (Uvix[i] <= 0) continue;  // Пропуск невалидных точек
+        double lnU = log(Uvix[i]);
+        sum_lnU += lnU;
+        sum_t += t[i];
+        sum_t2 += t[i] * t[i];
+        sum_tlnU += t[i] * lnU;
+    }
+
+    // 2. Решение системы уравнений для ln(a) и b
+    double b = (n * sum_tlnU - sum_t * sum_lnU) / (n * sum_t2 - sum_t * sum_t);
+    double ln_a = (sum_lnU - b * sum_t) / n;
+
+    return exp(ln_a);  // Возвращаем параметр 'a' из модели Uvix = a * exp(b*t)
 }
 
 // Вывод таблицы значений t, Uvx, Uvix в три строки
@@ -79,9 +92,9 @@ void file_out_data(int n, float* t, float* Uvx, long double* Uvix) {
 
 // Функция приближённого расчёта значения параметра с заданной точностью
 void approx_value(struct AppParams ap_pr) {
-    float p = 1;
-    float par = 1e10;
-    float par1 = 0;
+    long double p = 1;
+    long double par = 1e10;
+    long double par1 = 0;
 
     printf("n   parametr   pogrechnost\n");
 
@@ -94,7 +107,7 @@ void approx_value(struct AppParams ap_pr) {
         p = fabs(par - par1) / fabs(par1);
         if (p > 1) p = 1;
 
-        printf("%d   %.5f   %.5f\n", ap_pr.n, par1, p);
+        printf("%d   %Lg   %Lg\n", ap_pr.n, par1, p);
 
         par = par1;
         ap_pr.n = 2 * ap_pr.n;
