@@ -24,7 +24,7 @@ void form_Uvx(struct AppParams ap_pr, float* t, float* Uvx) {
 // Формирование массива значений Uvix на основе Uvx по кусочной линейной аппроксимации
 void form_Uvix(struct AppParams ap_pr, float* Uvx, long double* Uvix) {
     for (int i = 0; i < ap_pr.n; i++) {
-		Uvix[i] = 5*pow(M_E,0.5*Uvx[i]);
+		Uvix[i] = 5*exp(0.5*Uvx[i]);
     }
 }
 

@@ -259,8 +259,9 @@ while true; do
 				if [ -f "data/graphs/graph_Uvx.png" ];then
 					clear
 	                echo -e "Закройте окно с графиками для продолжения!"
-	                open data/graphs/graph_Uvx.png > /dev/null 2>&1    # Открытие изображения через open
+	                open data/graphs/graph_Uvx.png > /dev/null 2>&1 &   # Открытие изображения через open
 	                open data/graphs/graph_Uvix.png > /dev/null 2>&1    # Открытие изображения через open
+	                wait
                 else
                 	echo "Графики ещё не созданы, сделайте контрольный расчет и сохраните данные в файл для генерации их"
                 	read -p "-> enter для возврата в главное меню"
