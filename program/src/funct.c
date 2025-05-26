@@ -6,9 +6,6 @@
 
 // Формирование массива времён t по шагу dt
 void form_time(struct AppParams ap_pr, float* t) {
-	ap_pr.tn *= M_PI;
-	ap_pr.tk *= M_PI;
-
     float dt = (ap_pr.tk - ap_pr.tn) / (ap_pr.n - 1);  // Шаг между точками времени
     for (int i = 0; i < ap_pr.n; i++) {
         t[i] = ap_pr.tn + i * dt;                      // t[i] = начальное + шаг * номер
@@ -18,19 +15,21 @@ void form_time(struct AppParams ap_pr, float* t) {
 // Формирование массива значений Uvx по заданному закону
 void form_Uvx(struct AppParams ap_pr, float* t, float* Uvx) {
     for (int i = 0; i < ap_pr.n; i++) {
-		Uvx[i] = ap_pr.U0 - ap_pr.U*sin(t[i]);
+		if (t[i] <= ap_pr.t1) Uvx[i] = ap_pr.a*(t[i] - ap_pr.tn);
+		else if (t[i] <= ap_pr.t2) Uvx[i] = ap_pr.a*(ap_pr.t1 - ap_pr.tn) - ap_pr.b*(t[i] - ap_pr.t1);
+		else Uvx[i] = ap_pr.a*(ap_pr.t1 - ap_pr.tn) - ap_pr.b*(ap_pr.t2 - ap_pr.t1) - ap_pr.c*(t[i] - ap_pr.t2);
     }
 }
 
 // Формирование массива значений Uvix на основе Uvx по кусочной линейной аппроксимации
-void form_Uvix(struct AppParams ap_pr, float* Uvx, float* Uvix) {
+void form_Uvix(struct AppParams ap_pr, float* Uvx, long double* Uvix) {
     for (int i = 0; i < ap_pr.n; i++) {
-		Uvix[i] = ap_pr.a*Uvx[i];
+		Uvix[i] = 5*pow(M_E,0.5*Uvx[i]);
     }
 }
 
 // Функция вычисляет продолжительность (в секундах), когда сигнал превышает порог
-float parametr(int n, float sum, float *U, float *t) {
+float parametr(int n, float sum, long double *U, float *t) {
     for (int i = 0; i < n; i++) {
         sum += U[i];
 	}
@@ -38,7 +37,7 @@ float parametr(int n, float sum, float *U, float *t) {
 }
 
 // Вывод таблицы значений t, Uvx, Uvix в три строки
-void form_tabl1(int n, float* t, float* Uvx, float* Uvix) {
+void form_tabl1(int n, float* t, float* Uvx, long double* Uvix) {
     for (int i = 0; i < n * 3; i++) {
         if (i < n) {
             if (i < (n - 1)) printf("%.3g ", t[i]);
@@ -47,8 +46,8 @@ void form_tabl1(int n, float* t, float* Uvx, float* Uvix) {
             if (i < (n * 2 - 1)) printf("%.3g ", Uvx[i - n]);
             else printf("%.3g\n", Uvx[i - n]);
         } else {
-            if (i < (n * 3 - 1)) printf("%.3g ", Uvix[i - n * 2]);
-            else printf("%.3g\n", Uvix[i - n * 2]);
+            if (i < (n * 3 - 1)) printf("%.3Lg ", Uvix[i - n * 2]);
+            else printf("%.3Lg\n", Uvix[i - n * 2]);
         }
     }
 }
@@ -61,7 +60,7 @@ void control_calc(struct AppParams ap_pr) {
 	form_tabl1(ap_pr.n, ap_pr.t, ap_pr.Uvx, ap_pr.Uvix); // Вывод таблицы значений
 }
 
-void file_out_data(int n, float* t, float* Uvx, float* Uvix) {
+void file_out_data(int n, float* t, float* Uvx, long double* Uvix) {
      FILE *f1,*f2,*f3;       //Объявление указателя на файловую переменную
 
      f1=fopen("./data/massiv_t.txt","w");
@@ -69,9 +68,9 @@ void file_out_data(int n, float* t, float* Uvx, float* Uvix) {
      f3=fopen("./data/massiv_Uvix.txt", "w");
      for (int i = 0;i < n;i++)
      {
-        fprintf(f1,"\n %6.3f",t[i]);
-        fprintf(f2,"\n %6.3f", Uvx[i]);         //Запись данных в файл
-        fprintf(f3,"\n%6.3f",Uvix[i]);
+        fprintf(f1,"\n%6.4f",t[i]);
+        fprintf(f2,"\n%6.4f", Uvx[i]);         //Запись данных в файл
+        fprintf(f3,"\n%6.4Lf",Uvix[i]);
       }
       fclose(f1);
       fclose(f2);                                       //Закрытие файлов

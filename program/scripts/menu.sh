@@ -73,18 +73,12 @@ pg1() {
     read -a header <<< "${out_data[0]}"   # Чтение первой строки как заголовок (не используется далее)
 
     # Печать заголовка таблицы в консоль
-    printf "\n	%-7s %8s %10s %9s\n" "   №" "t" "Uvx" "Uvix"
-
-    # Запись заголовка таблицы в файл
-    printf "%-4s %7s %9s %8s\n" "№" "t" "Uvx" "Uvix" > "data/tabls/table_krnt.txt"
+    printf "\n	%s %8s %10s %9s\n" "   №" "t" "Uvx" "Uvix"
 
     # Печать и запись каждой строки таблицы
     for i in "${!t[@]}"; do
-        printf "        %5d %9.1f %9.1f %9.1f\n" \
+        printf "        %-5d %-9.2f %-10.2f %-20.2f\n" \
             "$((i+1))" "${t[$i]}" "${Uvx[$i]}" "${Uvix[$i]}"
-
-        printf "%5d %9.1f %9.1f %9.1f\n" \
-            "$((i+1))" "${t[$i]}" "${Uvx[$i]}" "${Uvix[$i]}" >> "data/tabls/table_krnt.txt"
     done
 
     echo -ne "\n-> enter для окончания просмотра"
