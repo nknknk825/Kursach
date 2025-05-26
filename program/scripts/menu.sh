@@ -75,16 +75,10 @@ pg1() {
     # Печать заголовка таблицы в консоль
     printf "\n	%-7s %8s %10s %9s\n" "   №" "t" "Uvx" "Uvix"
 
-    # Запись заголовка таблицы в файл
-    printf "%-4s %7s %9s %8s\n" "№" "t" "Uvx" "Uvix" > "data/tabls/table_krnt.txt"
-
     # Печать и запись каждой строки таблицы
     for i in "${!t[@]}"; do
         printf "        %5d %9.1f %9.1f %9.1f\n" \
             "$((i+1))" "${t[$i]}" "${Uvx[$i]}" "${Uvix[$i]}"
-
-        printf "%5d %9.1f %9.1f %9.1f\n" \
-            "$((i+1))" "${t[$i]}" "${Uvx[$i]}" "${Uvix[$i]}" >> "data/tabls/table_krnt.txt"
     done
 
     echo -ne "\n-> enter для окончания просмотра"
@@ -108,7 +102,6 @@ pg2() {
     # Чтение заголовка таблицы
     read -a header <<< "${out_data[0]}"
     printf "\n  %7s %12s %14s\n" " ${header[0]}" "${header[1]}" "${header[2]}"
-    printf "%7s %12s %14s\n" "${header[0]}" "${header[1]}" "${header[2]}" > "data/tabls/table_rpzt.txt"
 
     # Построчная обработка данных таблицы (начиная со второй строки)
     while read -a arr; do
@@ -119,13 +112,10 @@ pg2() {
         printf "    %6d %10.3f %12f%%\n" \
             "${arr[0]}" "${arr[1]}" "${num}"
 
-        # Запись строки в файл
-        printf "%7d %10.3f %12f%%\n" \
-            "${arr[0]}" "${arr[1]}" "${num}" >> "data/tabls/table_rpzt.txt"
 
         # Прекращение при достижении половины массива
         if [ "${arr[0]}" -gt "$((N/2))" ]; then
-            echo " Достигнут предел массива (${N} элементов). Остановка" >> "data/tabls/table_rpzt.txt"
+            echo " Достигнут предел массива (${N} элементов). Остановка"
             break
         fi
 
@@ -174,7 +164,7 @@ while true; do
             	info_n=(
             		"null"
             		"Количество точек расчёта"
-            		"Начало осчета параметро eps"
+            		"Начало осчёта параметра eps"
             	)
                 clear
                 echo "Ведите n(${info_n[$key]}):"
@@ -196,14 +186,14 @@ while true; do
 
 				if [ "$key" == "2" ];then
                     echo "Ведите погрешность eps(допустимая погрешность):"
-                    echo "Диапазон eps: [0.001; 20]%"
+                    echo "Диапазон eps: [0.0001; 10]%"
                     while true; do
                         is_number "	Введите eps: " '^[0-9]*\.?[0-9]+$'    # Проверка вещественного числа
 
-                        # Проверка: num > 0.0009
-                        valid_min=$(echo "$num > 0.0009" | bc -l)
-                        # Проверка: num < 99.99
-                        valid_max=$(echo "$num < 20" | bc -l)
+                        # Проверка: num > 0.00009
+                        valid_min=$(echo "$num > 0.00009" | bc -l)
+                        # Проверка: num < 10
+                        valid_max=$(echo "$num < 10" | bc -l)
 
                         if [[ "$valid_min" -eq 1 && "$valid_max" -eq 1 ]]; then
                             break
@@ -247,7 +237,8 @@ while true; do
                     read -rsn1 nn
                     if [ "$nn" == "y" ]; then
                         echo -e "\nЗакройте окно с графиками для продолжения!"
-                        eog data/graphs/graph_Uvx.png > /dev/null 2>&1    # Открытие изображения через eog
+                        open data/graphs/graph_Uvx.png > /dev/null 2>&1    # Открытие изображения через open
+                        open data/graphs/graph_Uvix.png > /dev/null 2>&1    # Открытие изображения через open
                     fi
                     cn_vr=3
                 else
