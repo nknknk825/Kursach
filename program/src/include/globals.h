@@ -4,18 +4,24 @@
 // Максимальное количество точек (для массивов)
 #define N 10000
 
-// Структура параметров приложения
-struct AppParams {
-    int n;              // Количество точек разбиения
+#define A1 0.5
+#define A2 2.5
+#define A3 0.5
 
-    float eps;          // Допустимая погрешность (для приближённого метода)
+#define B1 10
+#define B2 10
+#define B3 60
 
-    float U, U1, U2;         // Коэффициенты линейных участков функции
-    
+#define UVX1 10
+#define UVX2 30
 
-    float T;   // время
+#define A_VX 20
+#define B_VX 0.5
+#define C_VX 0.1
 
-    float Uvx1, Uvx2;   // Пороговые значения для функции Uvix
-};
+#define TN 10
+#define T1 15
+#define T2 30
+#define TK 60
 
 #endif

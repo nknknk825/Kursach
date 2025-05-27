@@ -4,35 +4,35 @@
 #include "globals.h"        // Заголовочный файл с глобальной структурой AppParams
 #include "funct.h"          // Заголовочный файл, содержащий прототипы текущих функций
 
+
 // Формирование массива времён t по шагу dt
-void form_time(struct AppParams ap_pr, float* t) {
-	float tn = 0;
-	float tk = ap_pr.T;
+void form_time(float* t, int n) {
+	float tn = TN;
+	float tk = TK;
 //	printf("|%f|", tk);
 
-    float dt = (tk - tn) / (ap_pr.n - 1);  // Шаг между точками времени
-    for (int i = 0; i < ap_pr.n; i++) {
+    float dt = (tk - tn) / (n - 1);  // Шаг между точками времени
+    for (int i = 0; i < n; i++) {
         t[i] = tn + i * dt;                      // t[i] = начальное + шаг * номер
     }
 }
 
 // Формирование массива значений Uvx по заданному закону
-void form_Uvx(struct AppParams ap_pr, float* t, float* Uvx) {
-    for (int i = 0; i < ap_pr.n; i++) {
-    	if (0 <= t[i] && t[i] <= ap_pr.T/2) Uvx[i] = ap_pr.U;
-    	else if (t[i] < ap_pr.T) Uvx[i] = 0;
+void form_Uvx(float* t, float* Uvx, int n) {
+    for (int i = 0; i < n; i++) {
+		if (t[i] <= T1) Uvx[i] = 0;
+		else if (t[i] <= T2) Uvx[i] = A_VX*(1-exp(-B_VX*(t[i]-T1)));
+		else Uvx[i] = A_VX*(1-exp(-B_VX*(T2-T1))) * exp(C_VX*(t[i]-T2));
     }
 }
 
+
 // Формирование массива значений Uvix на основе Uvx по кусочной линейной аппроксимации
-void form_Uvix(struct AppParams ap_pr, float* Uvx, float* Uvix) {
-    for (int i = 0; i < ap_pr.n; i++) {
-        if (Uvx[i] <= ap_pr.Uvx1)
-            Uvix[i] = ap_pr.U1;                        // Меньше порога — константа U1
-        else if (Uvx[i] >= ap_pr.Uvx2)
-            Uvix[i] = ap_pr.U2;                        // Больше порога — константа U2
-        else
-            Uvix[i] = 6.5 * Uvx[i] - 12.5;              // Промежуточное значение — линейная функция
+void form_Uvix(float* Uvx, float* Uvix, int n) {
+    for (int i = 0; i < n; i++) {
+		if (Uvx[i] <= UVX1) Uvix[i] = A1*Uvx[i]+B1;
+		else if (Uvx[i] <= UVX2) Uvix[i] = A2*Uvx[i]+B2;
+		else Uvix[i] = A3*Uvx[i]+B3;
     }
 }
 
@@ -83,15 +83,15 @@ void form_tabl1(int n, float* t, float* Uvx, float* Uvix) {
     }
 }
 
-void control_calc(struct AppParams ap_pr) {
+void control_calc(int n, int eps) {
     float t[N], Uvx[N], Uvix[N];       // Массивы для времён, промежуточного и результирующего напряжения
 
-    form_time(ap_pr, t);              // Заполнение массива времени
-    form_Uvx(ap_pr, t, Uvx);          // Расчёт промежуточного напряжения Uvx
-    form_Uvix(ap_pr, Uvx, Uvix);      // Расчёт результирующего напряжения Uvix
+    form_time(t, n);              // Заполнение массива времени
+    form_Uvx(t, Uvx, n);          // Расчёт промежуточного напряжения Uvx
+    form_Uvix(Uvx, Uvix, n);      // Расчёт результирующего напряжения Uvix
 
-	if (ap_pr.eps == 100) file_out_data(ap_pr.n, t, Uvx, Uvix);
-	else form_tabl1(ap_pr.n, t, Uvx, Uvix); // Вывод таблицы значений
+	if (eps == 100) file_out_data(n, t, Uvx, Uvix);
+	else form_tabl1(n, t, Uvx, Uvix); // Вывод таблицы значений
 }
 
 void file_out_data(int n, float* t, float* Uvx, float* Uvix) {
@@ -112,7 +112,7 @@ void file_out_data(int n, float* t, float* Uvx, float* Uvix) {
 }
 
 // Функция приближённого расчёта значения параметра с заданной точностью
-void approx_value(struct AppParams ap_pr) {
+void approx_value(int n, int eps) {
     float t[N], Uvx[N], Uvix[N];
     float p = 1;
     float par = 1e10;
@@ -120,19 +120,19 @@ void approx_value(struct AppParams ap_pr) {
 
     printf("n   parametr   pogrechnost\n");
 
-    while (p > ap_pr.eps && ap_pr.n < N) {
-        form_time(ap_pr, t);
-        form_Uvx(ap_pr, t, Uvx);
-        form_Uvix(ap_pr, Uvx, Uvix);
+    while (p > eps && n < N) {
+        form_time(t, n);
+        form_Uvx(t, Uvx, n);
+        form_Uvix(Uvx, Uvix, n);
 
-        par1 = parametr(ap_pr.n, 0, Uvix, t);
+        par1 = parametr(n, 0, Uvix, t);
         p = fabs(par - par1) / fabs(par1);
         if (p > 1) p = 1;
 
-        printf("%d   %.5f   %.5f\n", ap_pr.n, par1, p);
+        printf("%d   %.5f   %.5f\n", n, par1, p);
 
         par = par1;
-        ap_pr.n = 2 * ap_pr.n;
+        n = 2 * n;
     }
 
 }
