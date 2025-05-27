@@ -38,10 +38,33 @@ void form_Uvix(struct AppParams ap_pr, float* Uvx, float* Uvix) {
 
 // Функция вычисляет продолжительность (в секундах), когда сигнал превышает порог
 float parametr(int n, float sum, float *U, float *t) {
-    for (int i = 0; i < n; i++) {
-        sum += U[i];
-	}
-    return sum / n;
+    // 1. Определяем точку перехода по Uvx (где происходит скачок)
+    int transition_point = 0;
+    for (int i = 1; i < n; i++) {
+        if (fabs(U[i] - U[i-1]) > 5.0f) {  // Порог для обнаружения перехода
+            transition_point = i;
+            break;
+        }
+    }
+
+    // 2. Вычисляем параметры перехода
+    if (transition_point > 0) {
+        // Основной параметр - время перехода
+        float transition_time = t[transition_point];
+
+        // Дополнительные характеристики:
+        float Uvix_before = U[transition_point-1];
+        float Uvix_after = U[transition_point];
+
+        // Комбинированный параметр (можно адаптировать под ваши нужды)
+        float param = transition_time * (Uvix_before - Uvix_after);
+
+        return param;
+    }
+
+    // Если переход не обнаружен
+    return 0.0f;
+
 }
 
 // Вывод таблицы значений t, Uvx, Uvix в три строки
