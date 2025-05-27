@@ -8,7 +8,8 @@ N=10000    # Максимальное количество точек
 variant_menu=(
         "1 - Контрольный расчет для n точек            "
         "2 - Расчёт параметра с заданной точностью     "
-        "3 - Запись данных в файлы                     "
+        "3 - Запись данных в файлы и генерация графиков"
+        "4 - Вывод графиков"
         "q - Выход из программы                        "
 )
 
@@ -73,23 +74,127 @@ pg1() {
     read -a header <<< "${out_data[0]}"   # Чтение первой строки как заголовок (не используется далее)
 
     # Печать заголовка таблицы в консоль
-    printf "\n	%-4s %9s %10s %9s\n" "   №" "t" "Uvx" "Uvix"
-
-    # Запись заголовка таблицы в файл
-    printf "%-4s %4s %9s %8s\n" "№" "t" "Uvx" "Uvix" > "data/tabls/table_krnt.txt"
+    printf "\n	%-7s %8s %10s %9s\n" "   №" "t" "Uvx" "Uvix"
+    printf "%-7s %8s %10s %9s\n" "   №" "t" "Uvx" "Uvix" > "./data/tabls/table_krnt.txt"
 
     # Печать и запись каждой строки таблицы
     for i in "${!t[@]}"; do
-        printf "        %5d %9.8f %9.1f %9.1f\n" \
+        printf "        %5d %9.1f %9.1f %9.1f\n" \
             "$((i+1))" "${t[$i]}" "${Uvx[$i]}" "${Uvix[$i]}"
 
         printf "%5d %9.1f %9.1f %9.1f\n" \
-            "$((i+1))" "${t[$i]}" "${Uvx[$i]}" "${Uvix[$i]}" >> "data/tabls/table_krnt.txt"
+            "$((i+1))" "${t[$i]}" "${Uvx[$i]}" "${Uvix[$i]}" >> "./data/tabls/table_krnt.txt"
     done
 
     echo -ne "\n-> enter для окончания просмотра"
     read
     clear    # Очистка экрана
+}
+
+float_compare() {
+    local a=$1
+    local op=$2
+    local b=$3
+    case $op in
+        "<")  return $(echo "$a < $b" | bc -l);;
+        ">")  return $(echo "$a > $b" | bc -l);;
+        "<=") return $(echo "$a <= $b" | bc -l);;
+        ">=") return $(echo "$a >= $b" | bc -l);;
+        "==") return $(echo "$a == $b" | bc -l);;
+        *)    echo "Неизвестный оператор"; return 1;;
+    esac
+}
+
+parametrs() {
+	echo
+    inp_data=("1 $n 0")                         # Формирование аргументов для вызова бинарного приложения
+
+    t=()                                       # Массив временных точек
+    Uvx=()                                     # Массив значений Uvx
+    Uvix=()                                    # Массив значений Uvix
+
+    i=0                                        # Счётчик строк
+
+    # Чтение вывода программы построчно
+    while read -r line; do
+        case $i in
+            [0-2])
+                read -a lin <<<"$line"         # Разбивает строку в массив
+            ;;&                                # Продолжает выполнение следующего условия case
+            0)
+                t=("${lin[@]}")                # Первая строка — массив t
+            ;;
+            1)
+                Uvx=("${lin[@]}")              # Вторая строка — массив Uvx
+            ;;
+            2)
+                Uvix=("${lin[@]}")             # Третья строка — массив Uvix
+            ;;
+        esac
+        let "i+=1"                             # Увеличение счётчика
+    done <<< "$(./bin/prg ${inp_data[@]})"   # Вызов внешней программы и обработка её вывода
+
+
+    # Функция для сравнения чисел с плавающей точкой
+
+    # 1. Нахождение длительности импульса сигнала
+    Umin=${Uvx[0]}
+    Umax=${Uvx[0]}
+    for ((i=1; i<n; i++)); do
+        if float_compare "${Uvx[i]}" "<" "$Umin"; then
+            Umin=${Uvx[i]}
+        fi
+        if float_compare "${Uvx[i]}" ">" "$Umax"; then
+            Umax=${Uvx[i]}
+        fi
+    done
+
+    Uimp=$(echo "$Umin + 0.5 * ($Umax - $Umin)" | bc -l)
+    dlit=0
+    dt=$(echo "${t[1]} - ${t[0]}" | bc -l)  # предполагаем равномерный шаг по времени
+
+    for ((i=0; i<n; i++)); do
+        if float_compare "${Uvx[i]}" ">=" "$Uimp"; then
+            dlit=$(echo "$dlit + $dt" | bc -l)
+        fi
+    done
+    printf "	Длительность импульса сигнала: %.6f\n" "$dlit"
+
+    # 2. Нахождение длительности заднего фронта импульса сигнала
+    U1=$(echo "$Umin + 0.9 * ($Umax - $Umin)" | bc -l)
+    U2=$(echo "$Umin + 0.1 * ($Umax - $Umin)" | bc -l)
+    back_front=0
+
+    for ((i=0; i<n-1; i++)); do
+        if float_compare "${Uvx[i]}" ">" "$U2" && \
+           float_compare "${Uvx[i]}" "<" "$U1" && \
+           float_compare "${Uvx[i+1]}" "<" "${Uvx[i]}"; then
+            back_front=$(echo "$back_front + $dt" | bc -l)
+        fi
+    done
+    printf "	Длительность заднего фронта импульса: %.6f\n" "$back_front"
+
+    # 3. Нахождение момента времени, при котором Uvx достигает 80 В
+    time_80=-1
+    for ((i=0; i<n; i++)); do
+        if float_compare "${Uvx[i]}" ">" "80.0"; then
+            time_80=${t[i]}
+            break
+        fi
+    done
+    printf "	Момент времени, когда Uvx достигает 80 В: %.6f\n" "$time_80"
+
+    # 4. Нахождение момента времени, при котором Uvx достигает максимума
+    time_max=${t[0]}
+    max_val=${Uvx[0]}
+    for ((i=1; i<n; i++)); do
+        if float_compare "${Uvx[i]}" ">" "$max_val"; then
+            max_val=${Uvx[i]}
+            time_max=${t[i]}
+        fi
+    done
+    printf "	Момент времени максимального значения Uvx: %.6f\n" "$time_max"
+
 }
 
 # Функция pg2 — вызывает бинарный файл, считывает вывод и выводит табличные данные с погрешностью
@@ -103,12 +208,15 @@ pg2() {
         out_data+=("$line")                      # Добавление каждой строки в массив
     done <<< "$(./bin/prg ${inp_data[@]})"
 
-    echo "Результат программы: "        # Заголовок результата
+    echo "Результат программы: "  > "./data/tabls/table_rpzt.txt"        # Заголовок результата
+
+	parametrs # Вывод доп-параметров
+	parametrs >> "./data/tabls/table_rpzt.txt" # Вывод доп-параметров
 
     # Чтение заголовка таблицы
     read -a header <<< "${out_data[0]}"
     printf "\n  %7s %12s %14s\n" " ${header[0]}" "${header[1]}" "${header[2]}"
-    printf "%7s %12s %14s\n" "${header[0]}" "${header[1]}" "${header[2]}" > "data/tabls/table_rpzt.txt"
+    printf "\n  %7s %12s %14s\n" " ${header[0]}" "${header[1]}" "${header[2]}"  >> "./data/tabls/table_rpzt.txt"
 
     # Построчная обработка данных таблицы (начиная со второй строки)
     while read -a arr; do
@@ -119,17 +227,21 @@ pg2() {
         printf "    %6d %10.3f %12f%%\n" \
             "${arr[0]}" "${arr[1]}" "${num}"
 
-        # Запись строки в файл
-        printf "%7d %10.3f %12f%%\n" \
-            "${arr[0]}" "${arr[1]}" "${num}" >> "data/tabls/table_rpzt.txt"
+        printf "    %6d %10.3f %12f%%\n" \
+            "${arr[0]}" "${arr[1]}" "${num}"  >> "./data/tabls/table_rpzt.txt"
 
-        # Прекращение при достижении половины массива
-        if [ "${arr[0]}" -gt "$((N/2))" ]; then
-            echo " Достигнут предел массива (${N} элементов). Остановка" >> "data/tabls/table_rpzt.txt"
-            break
-        fi
+    if [ "${arr[0]}" -gt "$((N/2))" ]; then
+        echo " Достигнут предел массива (${N} элементов). Остановка"
+        echo " Достигнут предел массива (${N} элементов). Остановка" >> "./data/tabls/table_rpzt.txt"
+    else if float_compare "${eps}" "<=" "${num}";then
+    		printf "\nДостигнут допустимая погрешность при параметре: ${arr[1]}\n" >> "./data/tabls/table_rpzt.txt"
+    	 fi
+    fi
 
     done < <(printf "%s\n" "${out_data[@]:1}")    # Передача строк начиная со второй (без заголовка)
+
+        # Прекращение при достижении половины массива
+
 
     echo -ne "-> enter для окончания просмотра"
     read
@@ -276,6 +388,22 @@ while true; do
                 fi
             ;;&
 
+	        g)
+	        	if [ -f "./data/graphs/graph_Uvx.png" ];then
+	        		clear
+
+	                echo -e "\nЗакройте окно с графиками для продолжения!"
+	                open data/graphs/graph_Uvx.png > /dev/null 2>&1    # Открытие изображения через open
+	                open data/graphs/graph_Uvix.png > /dev/null 2>&1    # Открытие изображения через open
+
+	                clear
+	                out_zast    # Повторный вывод заставки
+	                break
+                else
+                    clear_line
+                    echo "Erorr: графики ещё не созданы!"
+                fi
+			;;&
 
             [1-$cn_vr])
                 clear
