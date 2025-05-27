@@ -97,6 +97,124 @@ ts2() {
 
     echo "Результат программы: "        # Заголовок результата
 
+
+    inp_data=("1 $n 0")                         # Формирование аргументов для вызова бинарного приложения
+
+    t=()                                       # Массив временных точек
+    Uvx=()                                     # Массив значений Uvx
+    Uvix=()                                    # Массив значений Uvix
+
+    i=0                                        # Счётчик строк
+    n_n=$n
+
+    # Чтение вывода программы построчно
+    while read -r line; do
+        case $i in
+            [0-2])
+                read -a lin <<<"$line"         # Разбивает строку в массив
+            ;;&                                # Продолжает выполнение следующего условия case
+            0)
+                t=("${lin[@]}")                # Первая строка — массив t
+            ;;
+            1)
+                Uvx=("${lin[@]}")              # Вторая строка — массив Uvx
+            ;;
+            2)
+                Uvix=("${lin[@]}")             # Третья строка — массив Uvix
+            ;;
+        esac
+        let "i+=1"                             # Увеличение счётчика
+    done <<< "$(./bin/prg ${inp_data[@]})"   # Вызов внешней программы и обработка её вывода
+
+	# Получаем количество элементов
+	n=${#t[@]}
+
+	# Проверяем, что массивы имеют одинаковую длину
+	if [ ${#Uvx[@]} -ne $n ] || [ ${#Uvix[@]} -ne $n ]; then
+	    echo "Ошибка: массивы имеют разную длину!"
+	    exit 1
+	fi
+
+	# Проверяем, есть ли данные
+	if [ "$n" -eq 0 ]; then
+	    echo "Ошибка: нет данных для анализа!"
+	    exit 1
+	fi
+
+	# Функция для сравнения чисел с плавающей точкой
+	float_compare() {
+	    local a=$1
+	    local op=$2
+	    local b=$3
+	    case $op in
+	        "<")  return $(echo "$a < $b" | bc -l);;
+	        ">")  return $(echo "$a > $b" | bc -l);;
+	        "<=") return $(echo "$a <= $b" | bc -l);;
+	        ">=") return $(echo "$a >= $b" | bc -l);;
+	        "==") return $(echo "$a == $b" | bc -l);;
+	        *)    echo "Неизвестный оператор"; return 1;;
+	    esac
+	}
+
+	# 1. Нахождение длительности импульса сигнала
+	Umin=${Uvx[0]}
+	Umax=${Uvx[0]}
+	for ((i=1; i<n; i++)); do
+	    if float_compare "${Uvx[i]}" "<" "$Umin"; then
+	        Umin=${Uvx[i]}
+	    fi
+	    if float_compare "${Uvx[i]}" ">" "$Umax"; then
+	        Umax=${Uvx[i]}
+	    fi
+	done
+
+	Uimp=$(echo "$Umin + 0.5 * ($Umax - $Umin)" | bc -l)
+	dlit=0
+	dt=$(echo "${t[1]} - ${t[0]}" | bc -l)  # предполагаем равномерный шаг по времени
+
+	for ((i=0; i<n; i++)); do
+	    if float_compare "${Uvx[i]}" ">=" "$Uimp"; then
+	        dlit=$(echo "$dlit + $dt" | bc -l)
+	    fi
+	done
+	printf "	1. Длительность импульса сигнала: %.6f\n" "$dlit"
+
+	# 2. Нахождение длительности заднего фронта импульса сигнала
+	U1=$(echo "$Umin + 0.9 * ($Umax - $Umin)" | bc -l)
+	U2=$(echo "$Umin + 0.1 * ($Umax - $Umin)" | bc -l)
+	back_front=0
+
+	for ((i=0; i<n-1; i++)); do
+	    if float_compare "${Uvx[i]}" ">" "$U2" && \
+	       float_compare "${Uvx[i]}" "<" "$U1" && \
+	       float_compare "${Uvx[i+1]}" "<" "${Uvx[i]}"; then
+	        back_front=$(echo "$back_front + $dt" | bc -l)
+	    fi
+	done
+	printf "	2. Длительность заднего фронта импульса: %.6f\n" "$back_front"
+
+	# 3. Нахождение момента времени, при котором Uvx достигает 80 В
+	time_80=-1
+	for ((i=0; i<n; i++)); do
+	    if float_compare "${Uvx[i]}" ">" "80.0"; then
+	        time_80=${t[i]}
+	        break
+	    fi
+	done
+	printf "	3. Момент времени, когда Uvx достигает 80 В: %.6f\n" "$time_80"
+
+	# 4. Нахождение момента времени, при котором Uvx достигает максимума
+	time_max=${t[0]}
+	max_val=${Uvx[0]}
+	for ((i=1; i<n; i++)); do
+	    if float_compare "${Uvx[i]}" ">" "$max_val"; then
+	        max_val=${Uvx[i]}
+	        time_max=${t[i]}
+	    fi
+	done
+	printf "	4. Момент времени максимального значения Uvx: %.6f\n" "$time_max"
+    
+
     # Чтение заголовка таблицы
     read -a header <<< "${out_data[0]}"
     printf "\n  %7s %12s %14s\n" " ${header[0]}" "${header[1]}" "${header[2]}"
