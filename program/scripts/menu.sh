@@ -230,14 +230,15 @@ pg2() {
 
         printf "    %6d %10.3f %12f%%\n" \
             "${arr[0]}" "${arr[1]}" "${num}"  >> "./data/tabls/table_rpzt.txt"
-
-    if [ "${arr[0]}" -gt "$((N/2))" ]; then
-        echo " Достигнут предел массива (${N} элементов). Остановка"
-        echo " Достигнут предел массива (${N} элементов). Остановка" >> "./data/tabls/table_rpzt.txt"
-    else if float_compare "${eps}" "<=" "${num}";then
-    		printf "\nДостигнут допустимая погрешность при параметре: ${arr[1]}\n" >> "./data/tabls/table_rpzt.txt"
-    	 fi
-    fi
+		if float_compare "${eps}" "<=" "${num}";then
+    		printf "\nДостигнут допустимая погрешность при параметре: ${arr[1]}\n"
+			printf "\nДостигнут допустимая погрешность при параметре: ${arr[1]}\n" >> "./data/tabls/table_rpzt.txt"
+			break
+		else if [ "${arr[0]}" -gt "$((N/2))" ]; then
+		        echo " Достигнут предел массива (${N} элементов). Остановка"
+        		echo " Достигнут предел массива (${N} элементов). Остановка" >> "./data/tabls/table_rpzt.txt"
+		    fi
+    	fi
 
     done < <(printf "%s\n" "${out_data[@]:1}")    # Передача строк начиная со второй (без заголовка)
 
