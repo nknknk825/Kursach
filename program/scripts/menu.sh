@@ -9,7 +9,7 @@ variant_menu=(
         "1 - Контрольный расчет для n точек            "
         "2 - Расчёт параметра с заданной точностью     "
         "3 - Запись данных в файлы и генерация графиков"
-        "4 - Вывод графиков							   "
+        "g - Вывод графиков							   "
         "o - Вывод отчета в pdf"
         "q - Выход из программы                        "
 )
@@ -278,7 +278,7 @@ while true; do
     echo
     while true; do
 
-        echo -n "Выберите действие 1-3 или q для выхода "
+        echo -n "Выберите действие 1-3 и g|o или q для выхода "
         read -rsn1 key    # Чтение одного символа
 		printf "\n"
     	cn_vr=2
@@ -376,14 +376,6 @@ while true; do
 					    maxima -b scripts/Wxmax_scr/make_graphs.mac > /dev/null 2>&1
 
 					    clear
-					    echo "Графики успешно нарисованы!"
-					    echo -ne "Вывести графики ? (y/n)"
-					    read -rsn1 nn
-					    if [ "$nn" == "y" ]; then
-					        echo -e "\nЗакройте окно с графиками для продолжения!"
-					        open data/graphs/graph_Uvx.png > /dev/null 2>&1    # Открытие изображения через open
-					        open data/graphs/graph_Uvix.png > /dev/null 2>&1    # Открытие изображения через open
-					    fi
 					    cn_vr=3
                 else
                     clear_line
@@ -391,7 +383,7 @@ while true; do
                 fi
             ;;&
 
-	        4)
+	        g)
 	        	if [ -f "./data/graphs/graph_Uvx.png" ];then
 	        		clear
 
@@ -413,7 +405,7 @@ while true; do
 				open ../note.pdf
 			;;
 
-            [1-$cn_vr]|o)
+            [1-$cn_vr]|o|g)
                 clear
                 out_zast    # Повторный вывод заставки
                 break
