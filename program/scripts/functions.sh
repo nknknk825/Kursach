@@ -82,6 +82,9 @@ moving_arrows() {
                         let "curs+=1"
                         curs=$(( curs > ${up_pred} ? 0 : curs))
                     ;;
+                    '[C')
+                    	break
+                    ;;
                 esac
             ;;
 
