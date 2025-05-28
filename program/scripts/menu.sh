@@ -1,7 +1,7 @@
 #!/bin/bash
 
 . ./scripts/functions.sh --source-only
-
+trap cleanup SIGINT
 clear    # Очистка экрана
 
 export LC_NUMERIC=C    # Установка десятичного разделителя как точка
@@ -18,6 +18,12 @@ variant_menu=(
 )
 
 file_name_zast="./config/zast.txt"
+
+cleanup() {
+	tput cnorm
+	clear
+	exit
+}
 
 # Функция pg1 — вызывает бинарный файл, считывает и обрабатывает его вывод
 pg1() {
@@ -277,7 +283,7 @@ while true; do
             ;;
 
             6)
-                break 2    # Завершение работы
+                break 2
             ;;
 
             *)
@@ -288,6 +294,5 @@ while true; do
     done
 done
 
-clear
-exit    # Завершение
+cleanup
 
