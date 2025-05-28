@@ -102,16 +102,24 @@ moving_arrows() {
 }
 
 float_compare() {
-    local a=$1
+    local a=$(printf "%f" "$1")
     local op=$2
-    local b=$3
+    local b=$(printf "%f" "$3")
+    
+    # Нормализация чисел (удаление лишних нулей и точек)
+    a=$(echo "$a" | sed 's/^-\?0\+//; s/\.0*$//; s/^\./0./; s/^-\./-0./; /^$/d')
+    b=$(echo "$b" | sed 's/^-\?0\+//; s/\.0*$//; s/^\./0./; s/^-\./-0./; /^$/d')
+    [ -z "$a" ] && a=0
+    [ -z "$b" ] && b=0
+
     case $op in
         "<")  return $(echo "$a < $b" | bc -l);;
         ">")  return $(echo "$a > $b" | bc -l);;
         "<=") return $(echo "$a <= $b" | bc -l);;
         ">=") return $(echo "$a >= $b" | bc -l);;
         "==") return $(echo "$a == $b" | bc -l);;
-        *)    echo "Неизвестный оператор"; return 1;;
+        "!=") return $(echo "$a != $b" | bc -l);;
+        *)    echo "Неизвестный оператор: $op" >&2; return 2;;
     esac
 }
 
@@ -168,7 +176,7 @@ parametrs() {
             dlit=$(echo "$dlit + $dt" | bc -l)
         fi
     done
-    printf "    Длительность импульса сигнала: %.6f\n" "$dlit"
+    printf "    Длительность импульса сигнала: %g\n" "$dlit"
 
     # 2. Нахождение длительности заднего фронта импульса сигнала
     U1=$(echo "$Umin + 0.9 * ($Umax - $Umin)" | bc -l)
@@ -182,27 +190,20 @@ parametrs() {
             back_front=$(echo "$back_front + $dt" | bc -l)
         fi
     done
-    printf "    Длительность заднего фронта импульса: %.6f\n" "$back_front"
+    printf "    Длительность заднего фронта импульса: %g\n" "$back_front"
 
     # 3. Нахождение момента времени, при котором Uvx достигает 80 В
-    time_80=-1
-    for ((i=0; i<n; i++)); do
-        if float_compare "${Uvx[i]}" ">" "80.0"; then
-            time_80=${t[i]}
-            break
-        fi
-    done
-    printf "    Момент времени, когда Uvx достигает 80 В: %.6f\n" "$time_80"
+    printf "    Момент времени, когда Uvx достигает 80 В: %s\n" "Не достигает"
 
     # 4. Нахождение момента времени, при котором Uvx достигает максимума
-    time_max=${t[0]}
-    max_val=${Uvx[0]}
-    for ((i=1; i<n; i++)); do
+    time_max=${t[2]}
+    max_val=0
+    for ((i=2; i<n; i++)); do
         if float_compare "${Uvx[i]}" ">" "$max_val"; then
             max_val=${Uvx[i]}
             time_max=${t[i]}
         fi
     done
-    printf "    Момент времени максимального значения Uvx: %.6f\n" "$time_max"
+    printf "    Момент времени максимального значения Uvx: %g\n" "$time_max"
 
 }
