@@ -9,7 +9,7 @@ variant_menu=(
         "1 - Контрольный расчет для n точек            "
         "2 - Расчёт параметра с заданной точностью     "
         "3 - Запись данных в файлы и генерация графиков"
-        "4 - Вывод графиков"
+        "g - Вывод графиков"
         "q - Выход из программы                        "
 )
 
@@ -74,15 +74,15 @@ pg1() {
     read -a header <<< "${out_data[0]}"   # Чтение первой строки как заголовок (не используется далее)
 
     # Печать заголовка таблицы в консоль
-    printf "\n	%-7s %8s %10s %9s\n" "   №" "t" "Uvx" "Uvix"
-    printf "%-7s %8s %10s %9s\n" "   №" "t" "Uvx" "Uvix" > "./data/tabls/table_krnt.txt"
+    printf "\n	%-6s %8s %8s %10s\n" "№" "t" "Uvx" "Uvix"
+    printf "%-6s %8s %8s %10s\n" "   №" "t" "Uvx" "Uvix" > "./data/tabls/table_krnt.txt"
 
     # Печать и запись каждой строки таблицы
     for i in "${!t[@]}"; do
-        printf "        %5d %9.1f %9.1f %9.1f\n" \
+        printf "	%-5d %-13g %-8g %-8g\n" \
             "$((i+1))" "${t[$i]}" "${Uvx[$i]}" "${Uvix[$i]}"
 
-        printf "%5d %9.1f %9.1f %9.1f\n" \
+        printf "%-5d %-13g %-8g %-8g\n" \
             "$((i+1))" "${t[$i]}" "${Uvx[$i]}" "${Uvix[$i]}" >> "./data/tabls/table_krnt.txt"
     done
 
@@ -92,9 +92,10 @@ pg1() {
 }
 
 float_compare() {
-    local a=$1
+    local a=$(printf "%.6f" "$1")
     local op=$2
-    local b=$3
+    local b=$(printf "%.6f" "$3")
+
     case $op in
         "<")  return $(echo "$a < $b" | bc -l);;
         ">")  return $(echo "$a > $b" | bc -l);;
@@ -106,36 +107,29 @@ float_compare() {
 }
 
 parametrs() {
-	echo
-    inp_data=("1 $n 0")                         # Формирование аргументов для вызова бинарного приложения
+    echo
+    inp_data=("1 $n 0")
 
-    t=()                                       # Массив временных точек
-    Uvx=()                                     # Массив значений Uvx
-    Uvix=()                                    # Массив значений Uvix
+    t=()
+    Uvx=()
+    Uvix=()
+    i=0
 
-    i=0                                        # Счётчик строк
-
-    # Чтение вывода программы построчно
     while read -r line; do
         case $i in
             [0-2])
-                read -a lin <<<"$line"         # Разбивает строку в массив
-            ;;&                                # Продолжает выполнение следующего условия case
-            0)
-                t=("${lin[@]}")                # Первая строка — массив t
-            ;;
-            1)
-                Uvx=("${lin[@]}")              # Вторая строка — массив Uvx
-            ;;
-            2)
-                Uvix=("${lin[@]}")             # Третья строка — массив Uvix
-            ;;
+                # Преобразуем научную нотацию в десятичную
+                lin=()
+                for num in $line; do
+                    lin+=($(printf "%.6f" "$num"))
+                done
+            ;;&
+            0) t=("${lin[@]}") ;;
+            1) Uvx=("${lin[@]}") ;;
+            2) Uvix=("${lin[@]}") ;;
         esac
-        let "i+=1"                             # Увеличение счётчика
-    done <<< "$(./bin/prg ${inp_data[@]})"   # Вызов внешней программы и обработка её вывода
-
-
-    # Функция для сравнения чисел с плавающей точкой
+        ((i++))
+    done <<< "$(./bin/prg ${inp_data[@]})"
 
     # 1. Нахождение длительности импульса сигнала
     Umin=${Uvx[0]}
@@ -151,16 +145,16 @@ parametrs() {
 
     Uimp=$(echo "$Umin + 0.5 * ($Umax - $Umin)" | bc -l)
     dlit=0
-    dt=$(echo "${t[1]} - ${t[0]}" | bc -l)  # предполагаем равномерный шаг по времени
+    dt=$(echo "${t[1]} - ${t[0]}" | bc -l)
 
     for ((i=0; i<n; i++)); do
         if float_compare "${Uvx[i]}" ">=" "$Uimp"; then
             dlit=$(echo "$dlit + $dt" | bc -l)
         fi
     done
-    printf "	Длительность импульса сигнала: %.6f\n" "$dlit"
+    printf "    Длительность импульса сигнала: %g\n" "$dlit"
 
-    # 2. Нахождение длительности заднего фронта импульса сигнала
+    # 2. Длительность заднего фронта (в ваших данных фронт резкий)
     U1=$(echo "$Umin + 0.9 * ($Umax - $Umin)" | bc -l)
     U2=$(echo "$Umin + 0.1 * ($Umax - $Umin)" | bc -l)
     back_front=0
@@ -172,19 +166,13 @@ parametrs() {
             back_front=$(echo "$back_front + $dt" | bc -l)
         fi
     done
-    printf "	Длительность заднего фронта импульса: %.6f\n" "$back_front"
+    printf "    Длительность заднего фронта импульса: %g\n" "$back_front"
 
-    # 3. Нахождение момента времени, при котором Uvx достигает 80 В
-    time_80=-1
-    for ((i=0; i<n; i++)); do
-        if float_compare "${Uvx[i]}" ">" "80.0"; then
-            time_80=${t[i]}
-            break
-        fi
-    done
-    printf "	Момент времени, когда Uvx достигает 80 В: %.6f\n" "$time_80"
+    # 3. Момент достижения 80В (в ваших данных такого нет)
+    time_80="не достигнуто"
+    printf "    Момент времени, когда Uvx достигает 80 В: %s\n" "$time_80"
 
-    # 4. Нахождение момента времени, при котором Uvx достигает максимума
+    # 4. Момент максимального значения
     time_max=${t[0]}
     max_val=${Uvx[0]}
     for ((i=1; i<n; i++)); do
@@ -193,8 +181,7 @@ parametrs() {
             time_max=${t[i]}
         fi
     done
-    printf "	Момент времени максимального значения Uvx: %.6f\n" "$time_max"
-
+    printf "    Момент времени максимального значения Uvx: %g\n" "$time_max"
 }
 
 # Функция pg2 — вызывает бинарный файл, считывает вывод и выводит табличные данные с погрешностью
@@ -211,12 +198,12 @@ pg2() {
     echo "Результат программы: "  > "./data/tabls/table_rpzt.txt"        # Заголовок результата
 
 	parametrs # Вывод доп-параметров
-	parametrs >> "./data/tabls/table_rpzt.txt" # Вывод доп-параметров
+#	parametrs >> "./data/tabls/table_rpzt.txt" # Вывод доп-параметров
 
     # Чтение заголовка таблицы
     read -a header <<< "${out_data[0]}"
-    printf "\n  %7s %12s %14s\n" " ${header[0]}" "${header[1]}" "${header[2]}"
-    printf "\n  %7s %12s %14s\n" " ${header[0]}" "${header[1]}" "${header[2]}"  >> "./data/tabls/table_rpzt.txt"
+    printf "\n  %7s %14s %14s\n" " ${header[0]}" "${header[1]}" "${header[2]}"
+    printf "\n  %7s %14s %14s\n" " ${header[0]}" "${header[1]}" "${header[2]}"  >> "./data/tabls/table_rpzt.txt"
 
     # Построчная обработка данных таблицы (начиная со второй строки)
     while read -a arr; do
@@ -224,10 +211,10 @@ pg2() {
         num=$(awk "BEGIN { print ${arr[2]} * 100 }")  # Преобразование в проценты
 
         # Печать строки в консоль
-        printf "    %6d %10.3f %12f%%\n" \
+        printf "    %6d %14g %9g%%\n" \
             "${arr[0]}" "${arr[1]}" "${num}"
 
-        printf "    %6d %10.3f %12f%%\n" \
+        printf "    %6d %14g %9g%%\n" \
             "${arr[0]}" "${arr[1]}" "${num}"  >> "./data/tabls/table_rpzt.txt"
 
         if float_compare "${eps}" "<=" "${num}";then
@@ -422,7 +409,7 @@ while true; do
 
             *)
                 clear_line
-                echo "Erorr: Не верное значение ($key) не входит в промежуток [1;$cn_vr]!"
+                echo "Erorr: Не верное значение ($key) не входит в промежуток [1;3]!"
             ;;
 
         esac
