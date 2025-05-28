@@ -6,9 +6,6 @@
 
 // Формирование массива времён t по шагу dt
 void form_time(struct AppParams ap_pr, float* t) {
-	ap_pr.tn *= M_PI;
-	ap_pr.tk *= M_PI;
-
     float dt = (ap_pr.tk - ap_pr.tn) / (ap_pr.n - 1);  // Шаг между точками времени
     for (int i = 0; i < ap_pr.n; i++) {
         t[i] = ap_pr.tn + i * dt;                      // t[i] = начальное + шаг * номер
@@ -18,14 +15,17 @@ void form_time(struct AppParams ap_pr, float* t) {
 // Формирование массива значений Uvx по заданному закону
 void form_Uvx(struct AppParams ap_pr, float* t, float* Uvx) {
     for (int i = 0; i < ap_pr.n; i++) {
-		Uvx[i] = ap_pr.U0 - ap_pr.U*sin(t[i]);
+		if (t[i] <= ap_pr.t1) Uvx[i] = ap_pr.a*(1-exp(-ap_pr.b*(t[i]-ap_pr.t1)));
+		else if (t[i] <= ap_pr.t2) Uvx[i] = ap_pr.a*(1-exp(-ap_pr.b*(ap_pr.t1-ap_pr.tn)))-ap_pr.d*(t[i]-ap_pr.t1);
+		else Uvx[i] = ap_pr.a*(1-exp(-ap_pr.b*(ap_pr.t1-ap_pr.tn)))-ap_pr.d*(ap_pr.t2-ap_pr.t1)*exp(-ap_pr.c*(t[i]-ap_pr.t2));
     }
 }
 
 // Формирование массива значений Uvix на основе Uvx по кусочной линейной аппроксимации
 void form_Uvix(struct AppParams ap_pr, float* Uvx, float* Uvix) {
     for (int i = 0; i < ap_pr.n; i++) {
-		Uvix[i] = ap_pr.a*Uvx[i];
+		if (Uvx[i] <= ap_pr.Uvx1) Uvix[i] = ap_pr.a_vix;
+		else Uvix[i] = ap_pr.b_vix*pow(Uvx[i], 2);
     }
 }
 

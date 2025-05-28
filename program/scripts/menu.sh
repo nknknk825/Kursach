@@ -1,4 +1,7 @@
 #!/bin/bash
+
+. ./scripts/functions.sh --source-only
+
 clear    # Очистка экрана
 
 export LC_NUMERIC=C    # Установка десятичного разделителя как точка
@@ -15,28 +18,6 @@ variant_menu=(
 )
 
 file_name_zast="./config/zast.txt"
-
-clear_line() {
-        echo -ne '\e[A\e[K'
-        echo -ne "\007"
-}
-
-is_number() {
-        re="$2"
-        num=0
-        echo -ne "$1"
-
-        while true
-        do
-                read num
-                if  [[ $num =~ $re ]]; then break;fi
-
-                clear_line
-
-                echo "  ОШИБКА: '$num'-не является целым числом"
-                echo -ne "$1"
-        done
-}
 
 # Функция pg1 — вызывает бинарный файл, считывает и обрабатывает его вывод
 pg1() {
@@ -90,112 +71,6 @@ pg1() {
     echo -ne "\n-> enter для окончания просмотра"
     read
     clear    # Очистка экрана
-}
-
-float_compare() {
-    local a=$1
-    local op=$2
-    local b=$3
-    case $op in
-        "<")  return $(echo "$a < $b" | bc -l);;
-        ">")  return $(echo "$a > $b" | bc -l);;
-        "<=") return $(echo "$a <= $b" | bc -l);;
-        ">=") return $(echo "$a >= $b" | bc -l);;
-        "==") return $(echo "$a == $b" | bc -l);;
-        *)    echo "Неизвестный оператор"; return 1;;
-    esac
-}
-
-parametrs() {
-	echo
-    inp_data=("1 $n 0")                         # Формирование аргументов для вызова бинарного приложения
-
-    t=()                                       # Массив временных точек
-    Uvx=()                                     # Массив значений Uvx
-    Uvix=()                                    # Массив значений Uvix
-
-    i=0                                        # Счётчик строк
-
-    # Чтение вывода программы построчно
-    while read -r line; do
-        case $i in
-            [0-2])
-                read -a lin <<<"$line"         # Разбивает строку в массив
-            ;;&                                # Продолжает выполнение следующего условия case
-            0)
-                t=("${lin[@]}")                # Первая строка — массив t
-            ;;
-            1)
-                Uvx=("${lin[@]}")              # Вторая строка — массив Uvx
-            ;;
-            2)
-                Uvix=("${lin[@]}")             # Третья строка — массив Uvix
-            ;;
-        esac
-        let "i+=1"                             # Увеличение счётчика
-    done <<< "$(./bin/prg ${inp_data[@]})"   # Вызов внешней программы и обработка её вывода
-
-
-    # Функция для сравнения чисел с плавающей точкой
-
-    # 1. Нахождение длительности импульса сигнала
-    Umin=${Uvx[0]}
-    Umax=${Uvx[0]}
-    for ((i=1; i<n; i++)); do
-        if float_compare "${Uvx[i]}" "<" "$Umin"; then
-            Umin=${Uvx[i]}
-        fi
-        if float_compare "${Uvx[i]}" ">" "$Umax"; then
-            Umax=${Uvx[i]}
-        fi
-    done
-
-    Uimp=$(echo "$Umin + 0.5 * ($Umax - $Umin)" | bc -l)
-    dlit=0
-    dt=$(echo "${t[1]} - ${t[0]}" | bc -l)  # предполагаем равномерный шаг по времени
-
-    for ((i=0; i<n; i++)); do
-        if float_compare "${Uvx[i]}" ">=" "$Uimp"; then
-            dlit=$(echo "$dlit + $dt" | bc -l)
-        fi
-    done
-    printf "	Длительность импульса сигнала: %.6f\n" "$dlit"
-
-    # 2. Нахождение длительности заднего фронта импульса сигнала
-    U1=$(echo "$Umin + 0.9 * ($Umax - $Umin)" | bc -l)
-    U2=$(echo "$Umin + 0.1 * ($Umax - $Umin)" | bc -l)
-    back_front=0
-
-    for ((i=0; i<n-1; i++)); do
-        if float_compare "${Uvx[i]}" ">" "$U2" && \
-           float_compare "${Uvx[i]}" "<" "$U1" && \
-           float_compare "${Uvx[i+1]}" "<" "${Uvx[i]}"; then
-            back_front=$(echo "$back_front + $dt" | bc -l)
-        fi
-    done
-    printf "	Длительность заднего фронта импульса: %.6f\n" "$back_front"
-
-    # 3. Нахождение момента времени, при котором Uvx достигает 80 В
-    time_80=-1
-    for ((i=0; i<n; i++)); do
-        if float_compare "${Uvx[i]}" ">" "80.0"; then
-            time_80=${t[i]}
-            break
-        fi
-    done
-    printf "	Момент времени, когда Uvx достигает 80 В: %.6f\n" "$time_80"
-
-    # 4. Нахождение момента времени, при котором Uvx достигает максимума
-    time_max=${t[0]}
-    max_val=${Uvx[0]}
-    for ((i=1; i<n; i++)); do
-        if float_compare "${Uvx[i]}" ">" "$max_val"; then
-            max_val=${Uvx[i]}
-            time_max=${t[i]}
-        fi
-    done
-    printf "	Момент времени максимального значения Uvx: %.6f\n" "$time_max"
-
 }
 
 # Функция pg2 — вызывает бинарный файл, считывает вывод и выводит табличные данные с погрешностью
@@ -269,20 +144,27 @@ out_data=()    # Массив выходных данных
 
 out_zast # Отображение заставки out_menu # Запуск главного меню
 
-while true; do
-
-    echo -e "Меню программы:"
+out_menu() {
     for indx in "${!variant_menu[@]}"; do
             echo "${variant_menu[${indx}]}"
     done
     echo
-    while true; do
 
 
         echo -n "Выберите действие 1-4 и o (или q для выхода)"
         read -rsn1 key    # Чтение одного символа
 		printf "\n"
+}
 
+while true; do
+	ij=8
+    echo -e "Управление меню происходит двумя способами:"
+    echo "   Первое-символами(1, 2, 3, 4, o, q)"
+    echo "   Второе-стрелочками(вниз-верх, и enter чтоб выбрать вариант)"
+
+    echo -e "\nМеню программы:"
+    while true; do
+		moving_arrows "${variant_menu[@]}"
         case $key in
             1|2)
 
@@ -357,8 +239,7 @@ while true; do
                     out_zast
                     break
                 else
-                    clear_line
-                    echo "Erorr: массивы t/Uvx/Uvix пусты!"
+                    mv_curs "Erorr: массивы t/Uvx/Uvix пусты!"
                 fi
             ;;
 
@@ -375,30 +256,32 @@ while true; do
 					echo "Графики выведены на экран!"
 
 	                echo -e "\nЗакройте окно с графиками для продолжения!"
-	                open data/graphs/graph_Uvx.png > /dev/null 2>&1    # Открытие изображения через open
-	                open data/graphs/graph_Uvix.png > /dev/null 2>&1    # Открытие изображения через open
+	                eog data/graphs/graph_Uvx.png > /dev/null 2>&1    # Открытие изображения через eog
 	                clear
+                    out_zast
 	                break
                 else
-                	echo "Erorr: файлы t/Uvx/Uvix пусты!"
+                	mv_curs "Erorr: файлы t/Uvx/Uvix пусты!"
                 fi
 
             ;;
 
-            o)
+            5)
+            	clear
             	echo "Закройте файл чтоб вернуться в главное меню!"
             	open "../note.pdf"
+
+				out_zast
             	clear
             	break
             ;;
 
-            q)
+            6)
                 break 2    # Завершение работы
             ;;
 
             *)
-                clear_line
-                echo "Erorr: Не верное значение ($key) не входит в промежуток [1;$cn_vr]!"
+                mv_curs "Erorr: Не верное значение ($key) не входит в промежуток [1;4] и не является(o, q)!"
             ;;
 
         esac
