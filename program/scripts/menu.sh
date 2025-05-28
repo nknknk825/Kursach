@@ -381,7 +381,7 @@ while true; do
 	        	if [ -f "./data/graphs/graph_Uvx.png" ];then
 	        		clear
 
-	                echo -e "\nЗакройте окно с графиками для продолжения!"
+	                echo -e "Закройте окно с графиками для продолжения!"
 	                open data/graphs/graph_Uvx.png > /dev/null 2>&1    # Открытие изображения через open
 	                open data/graphs/graph_Uvix.png > /dev/null 2>&1    # Открытие изображения через open
 
