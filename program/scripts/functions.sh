@@ -56,9 +56,7 @@ moving_arrows() {
 
         case $key in
         	1|2|3|4)
-        		echo "$key"
         		key=$key
-        		echo "$key"
         		return
         	;;
         	o)

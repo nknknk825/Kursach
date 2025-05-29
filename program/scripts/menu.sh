@@ -262,7 +262,8 @@ while true; do
 					echo "Графики выведены на экран!"
 
 	                echo -e "\nЗакройте окно с графиками для продолжения!"
-	                eog data/graphs/graph_Uvx.png > /dev/null 2>&1    # Открытие изображения через eog
+	                open data/graphs/graph_Uvx.png > /dev/null 2>&1    # Открытие изображения через eog
+	                open data/graphs/graph_Uvix.png > /dev/null 2>&1    # Открытие изображения через eog
 	                clear
                     out_zast
 	                break
