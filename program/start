@@ -12,4 +12,5 @@ for elm in "${list_apt[@]}";do
 done
 
 make
+rm README.txt
 rm start
