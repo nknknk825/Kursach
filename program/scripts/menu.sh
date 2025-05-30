@@ -13,8 +13,13 @@ clear    # Очистка экрана
 export LC_NUMERIC=C    # Установка десятичного разделителя как точка
 
 N=15000    # Максимальное количество точек
-#sed -i "5s/.*/#define N $N/" src/include/globals.h
-#make >/dev/null
+
+cleanup() {
+        tput cnorm
+        clear
+        exit
+}
+trap cleanup SIGINT
 # Функция вывода заставки
 out_zast(){
     while read -r line; do
@@ -27,24 +32,25 @@ out_zast(){
 out_menu() {
     while true; do
 
-        style "Меню программы:" $green
-        for indx in "${!variant_menu[@]}"; do
-            if [ "$indx" != "2" ]; then
-                style "${variant_menu[${indx}]}" $yellow
-            elif [[ "$indx" == "2" && "${#t[@]}" -gt "0" ]]; then
-                style "${variant_menu[${indx}]}" $i_yellow
-            fi
-        done
-        echo
+	    con_ckip_rows=7
+	    st_rows=7
+	    style "Управление меню происходит двумя способами:" $yellow
+	    style "	Первое-символами(1, 2, 3, p, q)" $yellow
+	    style "	Второе-стрелочками(вниз-верх, и enter/-> чтоб выбрать вариант)" $yellow
+
+	    style "\nМеню программы:" $yellow
+
+
         while true; do
 
             # Определение доступных пунктов меню
             if [ "${#t[@]}" -gt "0" ]; then con_vr=3
             else con_vr=2; fi
 
-            style "Выберите действие 1-${con_vr} и p или q для выхода " $blue n
-            read -rsn1 key    # Чтение одного символа
-			printf "\n"
+#            style "Выберите действие 1-${con_vr} и p или q для выхода " $blue n
+#            read -rsn1 key    # Чтение одного символа
+#			printf "\n"
+			moving_arrows "${variant_menu[@]}"
             case $key in
                 1|2)
                     clear
@@ -101,12 +107,11 @@ out_menu() {
                 	if [ "$con_vr" == "3" ];then
                     	out_file    # Запись результатов в файл
                     else
-	                    clear_line
-	                    style "Erorr: Не верное значение ($key) не входит в промежуток [1;$con_vr]!" $red
+	                    mv_curs "Erorr: Не верное значение ($key) не входит в промежуток [1;$con_vr]!" $red
                     fi
                 ;;&
 
-                p)
+                p|4)
                 	clear
                 	style "Закройте окно для возврата в меню!" $yellow
 	                xterm \
@@ -135,7 +140,7 @@ out_menu() {
 					wait
 	            ;;&
 
-                [1-$con_vr]|p|s)
+                [1-$con_vr]|p|s|4)
                     clear
                     out_zast    # Повторный вывод заставки
                     break
@@ -144,13 +149,12 @@ out_menu() {
                 3)
 				;;
 
-                q)
+                q|5)
                     return    # Завершение работы
                 ;;
 
                 *)
-                    clear_line
-                    style "Erorr: Не верное значение ($key) не входит в промежуток [1;$con_vr] и p!" $red
+                    mv_curs "Erorr: Не верное значение ($key) не входит в промежуток [1;$con_vr] и p!" $red
                 ;;
 
             esac

@@ -1,5 +1,7 @@
 #!/bin/sh
 
+. ./functions.sh
+
 # Функция pg2 — вызывает бинарный файл, считывает вывод и выводит табличные данные с погрешностью
 pg2() {
     inp_data=("$1 $n $eps")                      # Формирование аргументов: номер варианта, количество точек, погрешность
@@ -11,12 +13,15 @@ pg2() {
         out_data+=("$line")                      # Добавление каждой строки в массив
     done <<< "$(./bin/myapp ${inp_data[@]})"
 
-    style "Результат программы: " $yellow        # Заголовок результата
+    style "Результат программы: " $yellow > "data/tabls/table_p2.txt"        # Заголовок результата
 
+
+	parametrs
+	parametrs >> "data/tabls/table_p2.txt"
     # Чтение заголовка таблицы
     read -a header <<< "${out_data[0]}"
     printf "\n  ${yellow}%7s %12s %14s${nc}\n" " ${header[0]}" "${header[1]}" "${header[2]}"
-    printf "%7s %12s %14s\n" "${header[0]}" "${header[1]}" "${header[2]}" > "data/tabls/table_p2.txt"
+    printf "%7s %12s %14s\n" "${header[0]}" "${header[1]}" "${header[2]}" >> "data/tabls/table_p2.txt"
 
     # Построчная обработка данных таблицы (начиная со второй строки)
     while read -a arr; do
